@@ -13,24 +13,16 @@ Player::Player(float x, float y, float z) {
 
 void Player::movePlayer() {
     if (IsKeyPressed(KEY_RIGHT)) {
-        for (int i = 0; i < 100; i++) {
-            playerPos.x += 0.01f;
-        }
+            playerPos.x += 1.0f;
     }
     else if (IsKeyPressed(KEY_LEFT)) {
-        for (int i = 0; i < 100; i++) {
-            playerPos.x -= 0.01f;
-        }
+            playerPos.x -= 1.0f;
     }
     else if (IsKeyPressed(KEY_DOWN)) {
-        for (int i = 0; i < 100; i++) {
-            playerPos.z += 0.01f;
-        }
+            playerPos.z += 1.0f;
     }
     else if (IsKeyPressed(KEY_UP)) {
-        for (int i = 0; i < 100; i++) {
-            playerPos.z -= 0.01f;
-        }
+            playerPos.z -= 1.0f;
     }
     return;
 }
