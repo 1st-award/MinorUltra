@@ -11,10 +11,29 @@ Player::Player(float x, float y, float z) {
     playerSize = 0.7f;
 }
 
-void Player::movePlayer(int keyCode) {
+void Player::movePlayer() {
+    if (IsKeyPressed(KEY_RIGHT)) {
+        for (int i = 0; i < 100; i++) {
+            playerPos.x += 0.01f;
+        }
+    }
+    else if (IsKeyPressed(KEY_LEFT)) {
+        for (int i = 0; i < 100; i++) {
+            playerPos.x -= 0.01f;
+        }
+    }
+    else if (IsKeyPressed(KEY_DOWN)) {
+        for (int i = 0; i < 100; i++) {
+            playerPos.z += 0.01f;
+        }
+    }
+    else if (IsKeyPressed(KEY_UP)) {
+        for (int i = 0; i < 100; i++) {
+            playerPos.z -= 0.01f;
+        }
+    }
     return;
 }
-
 void Player::drawPlayer() {
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);

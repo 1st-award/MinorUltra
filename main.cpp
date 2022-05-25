@@ -9,14 +9,13 @@
 *
 ********************************************************************************************/
 
-#include "src/raylib.h"
+#include "raylib.h"
 #include "Player.h"
 
 int main(void)
 {
     // My Initialization
     Player* player = new Player(-0.5f, 0.0f, -0.5f);
-
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -27,9 +26,9 @@ int main(void)
 
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.position = Vector3{ 10.0f, 10.0f, 10.0f }; // Camera position
+    camera.target = Vector3{ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    camera.up = Vector3{ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;                   // Camera mode type
 
@@ -47,9 +46,10 @@ int main(void)
         //----------------------------------------------------------------------------------
         UpdateCamera(&camera);          // Update camera
 
-        if (IsKeyDown('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+        if (IsKeyDown('Z')) camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
         //----------------------------------------------------------------------------------
-
+        //Player move
+        player->movePlayer();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
