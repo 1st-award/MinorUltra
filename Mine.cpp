@@ -1,23 +1,41 @@
 #include "Mine.h"
 
-Mine::Mine(int num, float x, float z) {
+Mine::Mine(int num, int mx, int mz) {
 	mineNum = num;
-	mapSizeX = x;
-	mapSizeZ = z;
+	mapBlockX = mx;
+	mapBlockZ = mz;
 	for (int i = 0; i < 100; i++) {
 		minePos[i] = Vector3{ 0.0f, 0.0f , 0.0f };
+	}
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			check[i][j] = true;
+		}
 	}
 };
 
 void Mine::landMine() {
-	float posX;
-	float posZ;
+	int posX;
+	int posZ;
 	srand((unsigned int)time(NULL));
-	for (int i = 0; i < mineNum; i++) {
-		posX = -0.5f + mapSizeX / 2 - rand() % (int)mapSizeX;
-		posZ = -0.5f + mapSizeZ / 2 - rand() % (int)mapSizeZ;
-		minePos[i] = Vector3{posX , 0.0f, posZ};
+	for (int i = 0; i < mineNum; ) {
+		posX = rand() % mapBlockX;
+		posZ = rand() % mapBlockZ;
+		if (checkMinePos(posX, posZ) == true) {
+			minePos[i] = Vector3{ 0.5f - mapBlockX / 2 + posX , 0.0f, 0.5f - mapBlockZ / 2 + posZ };
+			i += 1;
+		}
 	}
+};
+
+bool Mine::checkMinePos(int posX,int posZ) {
+	check[4][4] = false;
+	if (check[posX][posZ] == true) {
+		check[posX][posZ] = false;
+
+		return true;
+	}
+	else { return false; }
 };
 
 void Mine::drawMine() {

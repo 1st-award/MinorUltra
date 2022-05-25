@@ -24,7 +24,7 @@ int main(void)
     char* remainTime;
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
-    Mine* mine = new Mine(70, 10, 10, -0.5f, -0.5f);
+    Mine* mine = new Mine(70, 10, 10);              //Mine(mineNum, mapBlockX, mapBlockY)
     mine->landMine();
 
     //--------------------------------------------------------------------------------------

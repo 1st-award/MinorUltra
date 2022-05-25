@@ -11,15 +11,15 @@
 class Mine
 {
 public:
-	Mine(int, int, int, float, float);
+	Mine(int, int, int);
 	void landMine();
 	void drawMine();
 	bool checkMinePos(int, int);
 
 private:
 	int mineNum;
-	int mapSizeX;
-	int mapSizeZ;
+	int mapBlockX;
+	int mapBlockZ;
 	Vector3 minePos[200];
 	bool check[10][10];
 };
