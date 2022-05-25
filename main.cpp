@@ -9,14 +9,19 @@
 *
 ********************************************************************************************/
 
-#include "src/raylib.h"
+#include <iostream>
+#include "raylib.h"
 #include "Player.h"
+#include "Timer.h"
 
 int main(void)
 {
     // My Initialization
     Player* player = new Player(-0.5f, 0.0f, -0.5f);
-
+    Timer* timer = new Timer();                         // Start Timer
+    timer->StartTimer(5.0f);                            // Set   Timer
+    char* remainTime;
+    char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -44,10 +49,11 @@ int main(void)
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
         // Update
-        //----------------------------------------------------------------------------------
-        UpdateCamera(&camera);          // Update camera
+        UpdateCamera(&camera);
 
-        if (IsKeyDown('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+        //----------------------------------------------------------------------------------
+        if (IsKeyDown('Z')) timer->StartTimer(5.0f);
+
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -62,6 +68,16 @@ int main(void)
         player->drawPlayer();
 
         EndMode3D();
+        if (timer->TimeDone()) {
+            std::cout << "Timer Out!!" << std::endl;
+            DrawText(timeOut, 20, 20, 10, BLACK);
+        }
+        else {
+            timer->UpdateTimer();                  // Update Timer
+            std::cout << timer->GetTimer() << std::endl;
+            sprintf(remainTime, "%.2f", timer->GetTimer());
+            DrawText(remainTime, 20, 20, 10, BLACK);
+        }
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
