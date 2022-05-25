@@ -22,6 +22,8 @@ int main(void)
     timer->StartTimer(5.0f);                            // Set   Timer
     char* remainTime;
     char timeOut[] = "Time Out!!";
+    Color textColor = BLACK;
+
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -50,9 +52,13 @@ int main(void)
     {
         // Update
         UpdateCamera(&camera);
+        if(timer->GetTimer() < 5)
+            textColor = RED;
+        else
+            textColor = BLACK;
 
         //----------------------------------------------------------------------------------
-        if (IsKeyDown('Z')) timer->StartTimer(5.0f);
+        if (IsKeyDown('Z')) timer->StartTimer(10.0f);
 
         //----------------------------------------------------------------------------------
 
@@ -69,14 +75,12 @@ int main(void)
 
         EndMode3D();
         if (timer->TimeDone()) {
-            std::cout << "Timer Out!!" << std::endl;
-            DrawText(timeOut, 20, 20, 10, BLACK);
+            DrawText(timeOut, 20, 20, 10, textColor);
         }
         else {
             timer->UpdateTimer();                  // Update Timer
-            std::cout << timer->GetTimer() << std::endl;
             sprintf(remainTime, "%.2f", timer->GetTimer());
-            DrawText(remainTime, 20, 20, 10, BLACK);
+            DrawText(remainTime, 20, 20, 10, textColor);
         }
         EndDrawing();
         //----------------------------------------------------------------------------------
