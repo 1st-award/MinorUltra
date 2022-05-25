@@ -11,10 +11,21 @@ Player::Player(float x, float y, float z) {
     playerSize = 0.7f;
 }
 
-void Player::movePlayer(int keyCode) {
+void Player::movePlayer() {
+    if (IsKeyPressed(KEY_RIGHT)) {
+            playerPos.x += 1.0f;
+    }
+    else if (IsKeyPressed(KEY_LEFT)) {
+            playerPos.x -= 1.0f;
+    }
+    else if (IsKeyPressed(KEY_DOWN)) {
+            playerPos.z += 1.0f;
+    }
+    else if (IsKeyPressed(KEY_UP)) {
+            playerPos.z -= 1.0f;
+    }
     return;
 }
-
 void Player::drawPlayer() {
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);

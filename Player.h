@@ -4,13 +4,13 @@
 
 #ifndef MINORULTRA_PLAYER_H
 #define MINORULTRA_PLAYER_H
-#include "src/raylib.h"
+#include "raylib.h"
 
 class Player {
 public:
     Player(float, float, float);
     void drawPlayer();
-    void movePlayer(int keyCode);
+    void movePlayer();
 
 private:
     Vector3 playerPos;
