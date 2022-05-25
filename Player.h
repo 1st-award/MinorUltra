@@ -10,7 +10,7 @@ class Player {
 public:
     Player(float, float, float);
     void drawPlayer();
-    void movePlayer(int keyCode);
+    void movePlayer();
 
 private:
     Vector3 playerPos;

@@ -9,7 +9,10 @@
 *
 ********************************************************************************************/
 
+<<<<<<< HEAD
 #include <iostream>
+=======
+>>>>>>> 6897fe113eee4464c1b3cabf10224afbfecc2757
 #include "raylib.h"
 #include "Player.h"
 #include "Timer.h"
@@ -18,12 +21,15 @@ int main(void)
 {
     // My Initialization
     Player* player = new Player(-0.5f, 0.0f, -0.5f);
+<<<<<<< HEAD
     Timer* timer = new Timer();                         // Start Timer
     timer->StartTimer(5.0f);                            // Set   Timer
     char* remainTime;
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
 
+=======
+>>>>>>> 6897fe113eee4464c1b3cabf10224afbfecc2757
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -34,9 +40,9 @@ int main(void)
 
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.position = Vector3{ 10.0f, 10.0f, 10.0f }; // Camera position
+    camera.target = Vector3{ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    camera.up = Vector3{ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;                   // Camera mode type
 
@@ -59,9 +65,9 @@ int main(void)
 
         //----------------------------------------------------------------------------------
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
-
         //----------------------------------------------------------------------------------
-
+        //Player move
+        player->movePlayer();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
