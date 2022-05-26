@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Mine.h"
+#include "Score.h"
 
 int main(void)
 {
@@ -25,8 +26,9 @@ int main(void)
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
     Mine* mine = new Mine(70, 10, 10);              //Mine(mineNum, mapBlockX, mapBlockY)
-    mine->landMine();
-
+    mine->landMine(4, 4);
+    Score* score = new Score();
+    char printScore[10];
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -78,6 +80,7 @@ int main(void)
         mine->drawMine();
 
         EndMode3D();
+        // Time Draw
         if (timer->TimeDone()) {
             DrawText(timeOut, 20, 20, 10, textColor);
         }
@@ -86,6 +89,10 @@ int main(void)
             sprintf_s(remainTime, "%.2f", timer->GetTimer());
             DrawText(remainTime, 20, 20, 10, textColor);
         }
+        // End Time draw
+        // Score Draw
+        sprintf_s(printScore, "%d", score->getScore());
+        DrawText(printScore, 750, 20, 10, textColor);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
