@@ -7,6 +7,7 @@
 #include "raylib.h"
 #include <random>
 #include <ctime>
+#include <vector>
 
 class Mine
 {
@@ -20,8 +21,8 @@ private:
 	int mineNum;
 	int mapBlockX;
 	int mapBlockZ;
-	Vector3 minePos[200];
-	bool check[10][10];
+	std::vector<Vector3> minePos;
+	std::vector<std::vector<bool>> check;
 };
 
 #endif

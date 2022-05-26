@@ -4,14 +4,8 @@ Mine::Mine(int num, int mx, int mz) {
 	mineNum = num;
 	mapBlockX = mx;
 	mapBlockZ = mz;
-	for (int i = 0; i < 100; i++) {
-		minePos[i] = Vector3{ 0.0f, 0.0f , 0.0f };
-	}
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			check[i][j] = true;
-		}
-	}
+	minePos.resize(mineNum, Vector3{0.0f, 0.0f, 0.0f});
+	check.resize(mapBlockX, std::vector<bool>(mapBlockZ, true));
 };
 
 void Mine::landMine() {
@@ -22,13 +16,15 @@ void Mine::landMine() {
 		posX = rand() % mapBlockX;
 		posZ = rand() % mapBlockZ;
 		if (checkMinePos(posX, posZ) == true) {
-			minePos[i] = Vector3{ 0.5f - mapBlockX / 2 + posX , 0.0f, 0.5f - mapBlockZ / 2 + posZ };
+			minePos[i].x = 0.5f - mapBlockX / (float)2 + posX;
+			minePos[i].y = 0.0f;
+			minePos[i].z = 0.5f - mapBlockZ / (float)2 + posZ;
 			i += 1;
 		}
 	}
 };
 
-bool Mine::checkMinePos(int posX,int posZ) {
+bool Mine::checkMinePos(int posX, int posZ) {
 	check[4][4] = false;
 	if (check[posX][posZ] == true) {
 		check[posX][posZ] = false;
