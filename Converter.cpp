@@ -4,7 +4,6 @@
 
 #include "Converter.h"
 #include "raylib.h"
-#include <iostream>
 
 int mapXLength;
 int mapZLength;
@@ -19,5 +18,4 @@ Vector3 Converter::translateToAbsolute(int relativePosX, int relativePosZ) {
 void Converter::setMapLength(int XLength, int ZLength) {
     mapXLength = XLength;
     mapZLength = ZLength;
-    std::cout << mapZLength << mapXLength;
 }
