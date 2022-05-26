@@ -6,6 +6,7 @@
 #define MINORULTRA_MINE_H
 #include "raylib.h"
 #include "Converter.h"
+#include "Player.h"
 #include <random>
 #include <ctime>
 #include <vector>
@@ -13,17 +14,16 @@
 class Mine
 {
 public:
-    Mine(int, int, int);
+    Mine(int);
     void setMineState(int, int, bool);
     std::vector<std::vector<bool>> getMineState();
-    void landMine(int, int);
+    void landMine(Player*);
     void drawMine();
     bool checkMinePos(int, int);
 
 private:
     int mineNum;
-    int mapBlockX;
-    int mapBlockZ;
+    int* mapLengthArr;
     std::vector<Vector3> mineAbsoluteValue;
     std::vector<std::vector<bool>> mineState;
 };

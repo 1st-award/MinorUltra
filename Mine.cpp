@@ -1,11 +1,10 @@
 #include "Mine.h"
 
-Mine::Mine(int num, int mx, int mz) {
+Mine::Mine(int num) {
     mineNum = num;
-    mapBlockX = mx;
-    mapBlockZ = mz;
+    mapLengthArr = Converter::getMapLength();
     mineAbsoluteValue.resize(mineNum, Vector3{ 0.0f, 0.0f, 0.0f });
-    mineState.resize(mapBlockX, std::vector<bool>(mapBlockZ, true));
+    mineState.resize(mapLengthArr[0], std::vector<bool>(mapLengthArr[1], true));
 };
 
 void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state){
@@ -16,14 +15,15 @@ std::vector<std::vector<bool>> Mine::getMineState() {
     return mineState;
 }
 
-void Mine::landMine(int playerBlockX, int playerBlockZ) {
+void Mine::landMine(Player* player) {
+    int* relativePlayerPos = player->getRelativePlayerPos();
     int posRelativeX;
     int posRelativeZ;
     srand((unsigned int)time(NULL));
     for (int i = 0; i < mineNum; ) {
-        posRelativeX = rand() % mapBlockX;
-        posRelativeZ = rand() % mapBlockZ;
-        if (checkMinePos(posRelativeX, posRelativeZ) == true && (posRelativeX != playerBlockX || posRelativeZ != playerBlockZ)) {
+        posRelativeX = rand() % mapLengthArr[0];
+        posRelativeZ = rand() % mapLengthArr[1];
+        if (checkMinePos(posRelativeX, posRelativeZ) == true && (posRelativeX != relativePlayerPos[0] || posRelativeZ != relativePlayerPos[1])) {
             mineState[posRelativeX][posRelativeZ] = false;
             mineAbsoluteValue[i] = Converter::translateToAbsolute(posRelativeX, posRelativeZ);
             i += 1;
