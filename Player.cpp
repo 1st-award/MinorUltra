@@ -3,30 +3,44 @@
 //
 
 #include "Player.h"
+#include "Converter.h"
 
-Player::Player(float x, float y, float z) {
-    playerPos.x = x;
-    playerPos.y = y;
-    playerPos.z = z;
+Player::Player(int playerPosX, int playerPosZ) {
+    relativePosX = playerPosX;
+    relativePosZ = playerPosZ;
     playerSize = 0.7f;
 }
 
 void Player::movePlayer() {
     if (IsKeyPressed(KEY_RIGHT)) {
-            playerPos.x += 1.0f;
+        relativePosX += 1;
+    } else if (IsKeyPressed(KEY_LEFT)) {
+        relativePosX -= 1;
+    } else if (IsKeyPressed(KEY_DOWN)) {
+        relativePosZ += 1;
+    } else if (IsKeyPressed(KEY_UP)) {
+        relativePosZ -= 1;
     }
-    else if (IsKeyPressed(KEY_LEFT)) {
-            playerPos.x -= 1.0f;
-    }
-    else if (IsKeyPressed(KEY_DOWN)) {
-            playerPos.z += 1.0f;
-    }
-    else if (IsKeyPressed(KEY_UP)) {
-            playerPos.z -= 1.0f;
-    }
-    return;
+    Player::limitMove();
 }
+
+void Player::limitMove() {
+    int *mapLengthArr = Converter::getMapLength();
+    int maxPosX = mapLengthArr[0] - 1;
+    int maxPosZ = mapLengthArr[1] - 1;
+
+    if (relativePosX < 0)
+        relativePosX = 0;
+    if (relativePosX > maxPosX)
+        relativePosX = maxPosX;
+    if (relativePosZ < 0)
+        relativePosZ = 0;
+    if (relativePosZ > maxPosZ)
+        relativePosZ = maxPosZ;
+}
+
 void Player::drawPlayer() {
+    playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
 }
