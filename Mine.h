@@ -13,7 +13,9 @@ class Mine
 {
 public:
 	Mine(int, int, int);
-	void landMine();
+	void setMineState(int, int, bool);
+	std::vector<std::vector<bool>> getMineState();
+	void landMine(int, int);
 	void drawMine();
 	bool checkMinePos(int, int);
 
@@ -22,7 +24,7 @@ private:
 	int mapBlockX;
 	int mapBlockZ;
 	std::vector<Vector3> minePos;
-	std::vector<std::vector<bool>> check;
+	std::vector<std::vector<bool>> mineState;
 };
 
 #endif
