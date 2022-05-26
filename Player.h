@@ -5,13 +5,17 @@
 #ifndef MINORULTRA_PLAYER_H
 #define MINORULTRA_PLAYER_H
 #include "raylib.h"
+#include "Mine.h"
 
 class Player {
 public:
     Player(int, int);
     void drawPlayer();
     void movePlayer();
+    void choiceFocus();
+    bool isStepOnMine(Mine*);
     int* getRelativePlayerPos();
+
 private:
     Vector3 playerPos;
     float playerSize;

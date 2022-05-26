@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "Converter.h"
+#include "Mine.h"
 
 Player::Player(int playerPosX, int playerPosZ) {
     relativePosX = playerPosX;
@@ -45,9 +46,14 @@ void Player::drawPlayer() {
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
 }
 
-int* Player::getRelativePlayerPos() {
-    int* playerPosArr = new int[2];
+bool Player::isStepOnMine(Mine *mine) {
+    return !(mine->checkMinePos(relativePosX, relativePosZ));
+}
+
+int *Player::getRelativePlayerPos() {
+    int *playerPosArr = new int[2];
     playerPosArr[0] = relativePosX;
     playerPosArr[1] = relativePosZ;
     return playerPosArr;
 }
+
