@@ -21,7 +21,7 @@ int main(void)
     Player* player = new Player(-0.5f, 0.0f, -0.5f);
     Timer* timer = new Timer();                         // Start Timer
     timer->StartTimer(5.0f);                            // Set   Timer
-    char* remainTime;
+    char remainTime[30];
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
     Mine* mine = new Mine(70, 10, 10);              //Mine(mineNum, mapBlockX, mapBlockY)
@@ -83,7 +83,7 @@ int main(void)
         }
         else {
             timer->UpdateTimer();                  // Update Timer
-            sprintf(remainTime, "%.2f", timer->GetTimer());
+            sprintf_s(remainTime, "%.2f", timer->GetTimer());
             DrawText(remainTime, 20, 20, 10, textColor);
         }
         EndDrawing();
