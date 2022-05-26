@@ -15,13 +15,13 @@ Player::Player(int playerPosX, int playerPosZ) {
 }
 
 void Player::movePlayer() {
-    if (IsKeyPressed(KEY_RIGHT)) {
+    if (IsKeyPressed(KEY_D)) {
         relativePosX += 1;
-    } else if (IsKeyPressed(KEY_LEFT)) {
+    } else if (IsKeyPressed(KEY_A)) {
         relativePosX -= 1;
-    } else if (IsKeyPressed(KEY_DOWN)) {
+    } else if (IsKeyPressed(KEY_S)) {
         relativePosZ += 1;
-    } else if (IsKeyPressed(KEY_UP)) {
+    } else if (IsKeyPressed(KEY_W)) {
         relativePosZ -= 1;
     }
     Player::limitMove();
