@@ -19,6 +19,7 @@
 int main(void)
 {
     // My Initialization
+    Converter::setMapLength(10, 10);
     Player* player = new Player(-0.5f, 0.0f, -0.5f);
     Timer* timer = new Timer();                         // Start Timer
     timer->StartTimer(5.0f);                            // Set   Timer
