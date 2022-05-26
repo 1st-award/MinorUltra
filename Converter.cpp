@@ -19,3 +19,10 @@ void Converter::setMapLength(int XLength, int ZLength) {
     mapXLength = XLength;
     mapZLength = ZLength;
 }
+
+int* Converter::getMapLength() {
+    int* tempArr = new int[2];
+    tempArr[0] = mapXLength;
+    tempArr[1] = mapZLength;
+    return tempArr;
+}

@@ -13,6 +13,8 @@ public:
     static Vector3 translateToAbsolute(int, int);
 
     static void setMapLength(int, int);
+
+    static int* getMapLength();
 };
 
 

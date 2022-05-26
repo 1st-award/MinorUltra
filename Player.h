@@ -8,13 +8,16 @@
 
 class Player {
 public:
-    Player(float, float, float);
+    Player(int, int);
     void drawPlayer();
     void movePlayer();
 
 private:
     Vector3 playerPos;
     float playerSize;
+    int relativePosX;
+    int relativePosZ;
+    void limitMove();
 };
 
 
