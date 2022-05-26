@@ -11,7 +11,7 @@ public:
     Player(int, int);
     void drawPlayer();
     void movePlayer();
-
+    int* getRelativePlayerPos();
 private:
     Vector3 playerPos;
     float playerSize;
