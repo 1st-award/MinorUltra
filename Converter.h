@@ -7,12 +7,11 @@
 
 #include "raylib.h"
 
+
 class Converter {
 public:
-    static int mapXLength;
-    static int mapZLength;
-
     static Vector3 translateToAbsolute(int, int);
+
     static void setMapLength(int, int);
 };
 
