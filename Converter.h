@@ -9,13 +9,11 @@
 
 class Converter {
 public:
-    Converter(int, int);
+    static int mapXLength;
+    static int mapZLength;
 
-    Vector3 translateToAbsolute(int, int);
-
-private:
-    int mapXLength;
-    int mapZLength;
+    static Vector3 translateToAbsolute(int, int);
+    static void setMapLength(int, int);
 };
 
 
