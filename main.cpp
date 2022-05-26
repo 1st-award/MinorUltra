@@ -13,6 +13,7 @@
 #include "raylib.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Mine.h"
 
 int main(void)
 {
@@ -23,6 +24,8 @@ int main(void)
     char* remainTime;
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
+    Mine* mine = new Mine(70, 10, 10);              //Mine(mineNum, mapBlockX, mapBlockY)
+    mine->landMine();
 
     //--------------------------------------------------------------------------------------
     // Initialization
@@ -72,6 +75,7 @@ int main(void)
 
         DrawGrid(10, 1.0f);
         player->drawPlayer();
+        mine->drawMine();
 
         EndMode3D();
         if (timer->TimeDone()) {
