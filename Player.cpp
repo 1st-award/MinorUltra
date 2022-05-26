@@ -9,8 +9,8 @@
 Player::Player(int playerPosX, int playerPosZ) {
     relativePosX = playerPosX;
     relativePosZ = playerPosZ;
-    relativeFocusX = -1;
-    relativeFocusZ = -1;
+    relativeFocusX = 0;
+    relativeFocusZ = 0;
     playerSize = 0.7f;
 }
 
@@ -65,6 +65,18 @@ void Player::choiceFocus() {
     } else if (IsKeyPressed(KEY_UP)) {
         relativeFocusZ -= 1;
     }
+    Player::limitFocus();
+}
+
+void Player::limitFocus() {
+    if(relativeFocusX - relativePosX > 1)
+        relativeFocusX -= 1;
+    if(relativeFocusX - relativePosX < -1)
+        relativeFocusX += 1;
+    if(relativeFocusZ - relativePosZ > 1)
+        relativeFocusZ -= 1;
+    if(relativeFocusZ - relativePosZ < -1)
+        relativeFocusZ += 1;
 }
 
 bool Player::isStepOnMine(Mine *mine) {

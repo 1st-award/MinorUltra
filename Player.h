@@ -25,6 +25,7 @@ private:
     int relativeFocusX;
     int relativeFocusZ;
     void limitMove();
+    void limitFocus();
 };
 
 

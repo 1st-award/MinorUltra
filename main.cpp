@@ -68,6 +68,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         //Player move
         player->movePlayer();
+        player->choiceFocus();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -77,6 +78,7 @@ int main(void)
         BeginMode3D(camera);
 
         DrawGrid(10, 1.0f);
+        player->drawFocus();
         player->drawPlayer();
         mine->drawMine();
 
