@@ -56,7 +56,15 @@ void Player::drawFocus() {
 }
 
 void Player::choiceFocus() {
-
+    if (IsKeyPressed(KEY_RIGHT)) {
+        relativeFocusX += 1;
+    } else if (IsKeyPressed(KEY_LEFT)) {
+        relativeFocusX -= 1;
+    } else if (IsKeyPressed(KEY_DOWN)) {
+        relativeFocusZ += 1;
+    } else if (IsKeyPressed(KEY_UP)) {
+        relativeFocusZ -= 1;
+    }
 }
 
 bool Player::isStepOnMine(Mine *mine) {
