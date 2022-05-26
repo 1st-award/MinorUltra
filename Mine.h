@@ -18,6 +18,7 @@ public:
 	void landMine(int, int);
 	void drawMine();
 	bool checkMinePos(int, int);
+	std::vector<Vector3> CopyminePos = minePos;
 
 private:
 	int mineNum;

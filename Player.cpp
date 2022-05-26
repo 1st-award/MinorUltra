@@ -9,6 +9,8 @@ Player::Player(float x, float y, float z) {
     playerPos.y = y;
     playerPos.z = z;
     playerSize = 0.7f;
+    
+    Vector3 cubePosition { playerPos.x, 0.0f, playerPos.z };
 }
 
 void Player::movePlayer() {

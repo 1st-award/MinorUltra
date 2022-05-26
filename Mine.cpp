@@ -6,6 +6,7 @@ Mine::Mine(int num, int mx, int mz) {
 	mapBlockZ = mz;
 	minePos.resize(mineNum, Vector3{ 0.0f, 0.0f, 0.0f });
 	mineState.resize(mapBlockX, std::vector<bool>(mapBlockZ, true));
+	CopyminePos = minePos;
 };
 
 void Mine::setMineState(int posX,int posZ, bool state){

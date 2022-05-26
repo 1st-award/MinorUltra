@@ -11,9 +11,11 @@ public:
     Player(float, float, float);
     void drawPlayer();
     void movePlayer();
+    void DrawPlayerSide();
 
 private:
     Vector3 playerPos;
+    Vector3 cubePosition;
     float playerSize;
 };
 

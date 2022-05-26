@@ -16,6 +16,44 @@
 #include "Mine.h"
 #include "Score.h"
 
+Color check = GREEN;
+int count = 0;
+void Player::DrawPlayerSide() {
+    Mine mine(70, 10, 10);
+    bool collision = false;
+    Vector3 cubePosition = { playerPos.x, 0.0f, playerPos.z };
+    if (IsKeyDown(KEY_SPACE)) {
+        DrawCube(cubePosition, 3.0f, -0.1f, 3.0f, check);
+    }
+    for (int i = 0; i < 70; i++) {
+        if (CheckCollisionBoxes(
+            BoundingBox{
+            Vector3 {
+            cubePosition.x - 1.0f / 2,
+                cubePosition.y - 1.0f / 2,
+                cubePosition.z - 1.0f / 2
+        },
+                Vector3 {
+                cubePosition.x + 1.0f / 2,
+                    cubePosition.y + 1.0f / 2,
+                    cubePosition.z + 1.0f / 2
+            }
+            },
+            BoundingBox{
+            Vector3 {
+            mine.CopyminePos[i].x - mine.CopyminePos[i].x / 2,
+                mine.CopyminePos[i].y - mine.CopyminePos[i].y / 2,
+                mine.CopyminePos[i].z - mine.CopyminePos[i].z / 2
+        },
+                Vector3 {
+                mine.CopyminePos[i].x + mine.CopyminePos[i].x / 2,
+                    mine.CopyminePos[i].y + mine.CopyminePos[i].y / 2,
+                    mine.CopyminePos[i].z + mine.CopyminePos[i].z / 2
+            }
+            })) collision = true;
+        if(collision == true)count += 1;
+    }
+}
 int main(void)
 {
     // My Initialization
@@ -29,6 +67,7 @@ int main(void)
     mine->landMine(4, 4);
     Score* score = new Score();
     char printScore[10];
+    char printCheck[50];
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -78,8 +117,14 @@ int main(void)
         DrawGrid(10, 1.0f);
         player->drawPlayer();
         mine->drawMine();
+        player->DrawPlayerSide();
 
         EndMode3D();
+        sprintf_s(printCheck, " %d", count);
+        DrawText(printCheck, 20, 50, 30, GRAY);
+        if (IsKeyUp(KEY_SPACE)) {
+            count = 0;
+        }
         // Time Draw
         if (timer->TimeDone()) {
             DrawText(timeOut, 20, 20, 10, textColor);
