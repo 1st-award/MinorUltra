@@ -12,6 +12,7 @@ public:
     Player(int, int);
     void drawPlayer();
     void movePlayer();
+    void drawFocus();
     void choiceFocus();
     bool isStepOnMine(Mine*);
     int* getRelativePlayerPos();
@@ -21,6 +22,8 @@ private:
     float playerSize;
     int relativePosX;
     int relativePosZ;
+    int relativeFocusX;
+    int relativeFocusZ;
     void limitMove();
 };
 

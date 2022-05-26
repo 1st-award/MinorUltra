@@ -9,6 +9,8 @@
 Player::Player(int playerPosX, int playerPosZ) {
     relativePosX = playerPosX;
     relativePosZ = playerPosZ;
+    relativeFocusX = -1;
+    relativeFocusZ = -1;
     playerSize = 0.7f;
 }
 
@@ -44,6 +46,17 @@ void Player::drawPlayer() {
     const Vector3 &playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
+}
+
+void Player::drawFocus() {
+    if(relativeFocusX >= 0 && relativeFocusZ >= 0) {
+        const Vector3 &focusPos = Converter::translateToAbsolute(relativeFocusX, relativeFocusZ);
+        DrawCubeWires(focusPos, playerSize, playerSize, playerSize, GREEN);
+    }
+}
+
+void Player::choiceFocus() {
+
 }
 
 bool Player::isStepOnMine(Mine *mine) {
