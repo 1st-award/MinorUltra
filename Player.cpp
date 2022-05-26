@@ -40,7 +40,14 @@ void Player::limitMove() {
 }
 
 void Player::drawPlayer() {
-    playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
+    const Vector3 &playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
+}
+
+int* Player::getRelativePlayerPos() {
+    int* playerPosArr = new int[2];
+    playerPosArr[0] = relativePosX;
+    playerPosArr[1] = relativePosZ;
+    return playerPosArr;
 }
