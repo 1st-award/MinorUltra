@@ -13,7 +13,9 @@ class Mine
 {
 public:
 	Mine(int, int, int);
-	void landMine();
+	void setMineState(int, int, bool);
+	std::vector<std::vector<bool>> getMineState();
+	void landMine(int, int);
 	void drawMine();
 	bool checkMinePos(int, int);
 
