@@ -20,7 +20,7 @@ int main(void)
 {
     // My Initialization
     Converter::setMapLength(10, 10);
-    Player* player = new Player(0, 0, 70);
+    Player* player = new Player(70);
     Timer* timer = new Timer();                         // Start Timer
     timer->StartTimer(5.0f);                            // Set   Timer
     char remainTime[30];

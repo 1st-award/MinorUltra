@@ -10,7 +10,7 @@
 
 class Player: public DefuseKit {
 public:
-    Player(int, int, int);
+    Player(int);
     void drawPlayer();
     void movePlayer();
     void drawFocus();
@@ -29,6 +29,7 @@ private:
     int relativeFocusZ;
     void limitMove();
     void limitFocus();
+    void setRandomSpawn();
 };
 
 #endif //MINORULTRA_PLAYER_H
