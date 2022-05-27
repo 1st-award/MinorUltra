@@ -70,13 +70,19 @@ void Player::choiceFocus() {
 }
 
 void Player::limitFocus() {
-    if(relativeFocusX - relativePosX > 1)
+    int *mapLengthArr = Converter::getMapLength();
+    int maxPosX = mapLengthArr[0] - 1;
+    int maxPosZ = mapLengthArr[1] - 1;
+    int distancePosX = relativeFocusX - relativePosX;
+    int distancePosZ = relativeFocusZ - relativePosZ;
+
+    if(distancePosX > 1 || relativeFocusX > maxPosX)
         relativeFocusX -= 1;
-    if(relativeFocusX - relativePosX < -1)
+    else if(distancePosX < -1 || relativeFocusX < 0)
         relativeFocusX += 1;
-    if(relativeFocusZ - relativePosZ > 1)
+    else if(distancePosZ > 1 || relativeFocusZ > maxPosZ)
         relativeFocusZ -= 1;
-    if(relativeFocusZ - relativePosZ < -1)
+    else if(distancePosZ < -1 || relativeFocusZ < 0)
         relativeFocusZ += 1;
 }
 
