@@ -7,7 +7,7 @@ Mine::Mine(int num) {
     mineState.resize(mapLengthArr[0], std::vector<bool>(mapLengthArr[1], true));
 };
 
-void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state){
+void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state) {
     mineState[posRelativeX][posRelativeZ] = state;
 }
 
@@ -32,6 +32,12 @@ void Mine::landMine(Player* player) {
 };
 
 bool Mine::checkMinePos(int posRelativeX, int posRelativeZ) {
+    int maxPosX = mapBlockX - 1;
+    int maxPosZ = mapBlockZ - 1;
+
+    if (posRelativeX < 0 || posRelativeX > maxPosX || posRelativeZ < 0 || posRelativeZ > maxPosZ) {
+        return true;
+    }
     if (mineState[posRelativeX][posRelativeZ] == true) {
         return true;
     }
