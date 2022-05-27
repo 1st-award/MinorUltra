@@ -2,13 +2,13 @@
 // Created by Admin on 2022-05-25.
 //
 
+#include <time.h>
 #include "Player.h"
 #include "Converter.h"
 #include "Mine.h"
 
-Player::Player(int playerPosX, int playerPosZ, int defuseKitNumber) {
-    relativePosX = playerPosX;
-    relativePosZ = playerPosZ;
+Player::Player(int defuseKitNumber) {
+    Player::setRandomSpawn();
     relativeFocusX = 0;
     relativeFocusZ = 0;
     playerSize = 0.7f;
@@ -118,4 +118,13 @@ int *Player::getRelativePlayerPos() {
     playerPosArr[0] = relativePosX;
     playerPosArr[1] = relativePosZ;
     return playerPosArr;
+}
+
+void Player::setRandomSpawn() {
+    int* mapLengthArr = Converter::getMapLength();
+    int mapLengthX = mapLengthArr[0];
+    int mapLengthZ = mapLengthArr[1];
+    srand((unsigned int)time(NULL));
+    relativePosX = rand() % mapLengthX;
+    relativePosZ = rand() % mapLengthZ;
 }
