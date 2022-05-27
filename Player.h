@@ -6,14 +6,16 @@
 #define MINORULTRA_PLAYER_H
 #include "raylib.h"
 #include "Mine.h"
+#include "DefuseKit.h"
 
-class Player {
+class Player: public DefuseKit {
 public:
-    Player(int, int);
+    Player(int, int, int);
     void drawPlayer();
     void movePlayer();
     void drawFocus();
     void choiceFocus();
+    void defuseBomb(Mine*);
     bool isStepOnMine(Mine*);
     int* getRelativePlayerPos();
 

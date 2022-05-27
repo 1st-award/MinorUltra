@@ -6,12 +6,13 @@
 #include "Converter.h"
 #include "Mine.h"
 
-Player::Player(int playerPosX, int playerPosZ) {
+Player::Player(int playerPosX, int playerPosZ, int defuseKitNumber) {
     relativePosX = playerPosX;
     relativePosZ = playerPosZ;
     relativeFocusX = 0;
     relativeFocusZ = 0;
     playerSize = 0.7f;
+    DefuseKit::setDefuseKit(defuseKitNumber);
 }
 
 void Player::movePlayer() {
@@ -77,6 +78,11 @@ void Player::limitFocus() {
         relativeFocusZ -= 1;
     if(relativeFocusZ - relativePosZ < -1)
         relativeFocusZ += 1;
+}
+
+void Player::defuseBomb(Mine* mine) {
+    bool result = DefuseKit::defuseBomb(relativeFocusX, relativeFocusZ, mine);
+    printf("%d", result);
 }
 
 bool Player::isStepOnMine(Mine *mine) {
