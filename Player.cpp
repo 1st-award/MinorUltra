@@ -107,7 +107,6 @@ void Player::limitFocus() {
 
 void Player::defuseBomb(Mine* mine) {
     bool result = DefuseKit::defuseBomb(relativeFocusX, relativeFocusZ, mine);
-    printf("%d", result);
 }
 
 bool Player::isStepOnMine(Mine *mine) {
