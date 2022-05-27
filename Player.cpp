@@ -10,22 +10,44 @@ Player::Player(int playerPosX, int playerPosZ) {
     relativePosZ = playerPosZ;
     playerSize = 0.7f;
 }
-
+int Player::checkMine(Mine* mine) {
+    int result = 0;
+    bool count[8]{};
+    if (IsKeyDown(KEY_SPACE)) {
+        count[0] = mine->checkMinePos(relativePosX - 1, relativePosZ - 1);
+        count[1] = mine->checkMinePos(relativePosX, relativePosZ - 1);
+        count[2] = mine->checkMinePos(relativePosX + 1, relativePosZ - 1);
+        count[3] = mine->checkMinePos(relativePosX - 1, relativePosZ);
+        count[4] = mine->checkMinePos(relativePosX + 1, relativePosZ);
+        count[5] = mine->checkMinePos(relativePosX - 1, relativePosZ + 1);
+        count[6] = mine->checkMinePos(relativePosX, relativePosZ + 1);
+        count[7] = mine->checkMinePos(relativePosX + 1, relativePosZ + 1);
+        for (int i = 0; i < 8; i++) {
+            if (count[i] == false) {
+                result += 1;
+            }
+        }
+        return result;
+    }
+}
 void Player::movePlayer() {
     if (IsKeyPressed(KEY_RIGHT)) {
         relativePosX += 1;
-    } else if (IsKeyPressed(KEY_LEFT)) {
+    }
+    else if (IsKeyPressed(KEY_LEFT)) {
         relativePosX -= 1;
-    } else if (IsKeyPressed(KEY_DOWN)) {
+    }
+    else if (IsKeyPressed(KEY_DOWN)) {
         relativePosZ += 1;
-    } else if (IsKeyPressed(KEY_UP)) {
+    }
+    else if (IsKeyPressed(KEY_UP)) {
         relativePosZ -= 1;
     }
     Player::limitMove();
 }
 
 void Player::limitMove() {
-    int *mapLengthArr = Converter::getMapLength();
+    int* mapLengthArr = Converter::getMapLength();
     int maxPosX = mapLengthArr[0] - 1;
     int maxPosZ = mapLengthArr[1] - 1;
 
@@ -40,7 +62,7 @@ void Player::limitMove() {
 }
 
 void Player::drawPlayer() {
-    const Vector3 &playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
+    const Vector3& playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
     DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
     DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
 }
