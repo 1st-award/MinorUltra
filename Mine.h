@@ -1,5 +1,5 @@
 //
-//	Create by Admin on 2022-05-26.
+//	Create by Admin on 2022-05-27.
 //
 
 #ifndef MINORULTRA_MINE_H
@@ -10,10 +10,15 @@
 #include <ctime>
 #include <vector>
 
+typedef struct mineStateStruct{
+    std::vector<bool> mineNumState;
+    std::vector<Vector3> mineAbsoluteValue;
+} mineStateStruct;
+
 class Mine
 {
 public:
-    Mine(int, int, int);
+    Mine(int);
     void setMineState(int, int, bool);
     std::vector<std::vector<bool>> getMineState();
     void landMine(int, int);
@@ -22,9 +27,8 @@ public:
 
 private:
     int mineNum;
-    int mapBlockX;
-    int mapBlockZ;
-    std::vector<Vector3> mineAbsoluteValue;
+    int* mapArray;
+    std::vector<std::vector<int>> mineNumMapping;
     std::vector<std::vector<bool>> mineState;
 };
 

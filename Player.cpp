@@ -27,7 +27,7 @@ int Player::checkMine(Mine* mine) {
         count[6] = mine->checkMinePos(relativePosX, relativePosZ + 1);
         count[7] = mine->checkMinePos(relativePosX + 1, relativePosZ + 1);
         for (int i = 0; i < 8; i++) {
-            if (count[i] == false) {
+            if (count[i] == true) {
                 result += 1;
             }
         }

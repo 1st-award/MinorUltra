@@ -26,8 +26,9 @@ int main(void)
     char remainTime[30];
     char timeOut[] = "Time Out!!";
     Color textColor = BLACK;
-    Mine* mine = new Mine(70, 10, 10);              //Mine(mineNum, mapBlockX, mapBlockY)
-    mine->landMine(4, 4);
+    Mine* mine = new Mine(70);              //Mine(mineNum)
+    int* playerRelativeArray = player->getRelativePlayerPos();
+    mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
     Score* score = new Score();
     char printScore[10];
     char printDefuseKit[10];
