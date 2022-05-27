@@ -1,15 +1,19 @@
 //
-//	Create by Admin on 2022-05-26.
+//	Create by Admin on 2022-05-27.
 //
 
 #ifndef MINORULTRA_MINE_H
 #define MINORULTRA_MINE_H
 #include "raylib.h"
 #include "Converter.h"
-#include "Player.h"
 #include <random>
 #include <ctime>
 #include <vector>
+
+typedef struct mineStateStruct{
+    std::vector<bool> mineNumState;
+    std::vector<Vector3> mineAbsoluteValue;
+} mineStateStruct;
 
 class Mine
 {
@@ -17,14 +21,14 @@ public:
     Mine(int);
     void setMineState(int, int, bool);
     std::vector<std::vector<bool>> getMineState();
-    void landMine(Player*);
+    void landMine(int, int);
     void drawMine();
     bool checkMinePos(int, int);
 
 private:
     int mineNum;
-    int* mapLengthArr;
-    std::vector<Vector3> mineAbsoluteValue;
+    int* mapArray;
+    std::vector<std::vector<int>> mineNumMapping;
     std::vector<std::vector<bool>> mineState;
 };
 

@@ -1,51 +1,60 @@
 #include "Mine.h"
 
+mineStateStruct* mineStateArray = new mineStateStruct;
+
 Mine::Mine(int num) {
     mineNum = num;
-    mapLengthArr = Converter::getMapLength();
-    mineAbsoluteValue.resize(mineNum, Vector3{ 0.0f, 0.0f, 0.0f });
-    mineState.resize(mapLengthArr[0], std::vector<bool>(mapLengthArr[1], true));
+    mapArray = Converter::getMapLength();
+    mineNumMapping.resize(mapArray[0], std::vector<int>(mapArray[1], -1));
+    mineStateArray->mineAbsoluteValue.resize(mineNum, Vector3{ 0.0f, 0.0f, 0.0f });
+    mineStateArray->mineNumState.resize(mineNum, false);
+    mineState.resize(mapArray[0], std::vector<bool>(mapArray[1], false));
 };
 
 void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state) {
     mineState[posRelativeX][posRelativeZ] = state;
+    if(mineNumMapping[posRelativeX][posRelativeZ] != -1) {
+        mineStateArray->mineNumState[mineNumMapping[posRelativeX][posRelativeZ]] = state;
+    }
 }
 
 std::vector<std::vector<bool>> Mine::getMineState() {
     return mineState;
 }
 
-void Mine::landMine(Player* player) {
-    int* relativePlayerPos = player->getRelativePlayerPos();
+void Mine::landMine(int playerRelativeX, int playerRelativeZ) {
     int posRelativeX;
     int posRelativeZ;
     srand((unsigned int)time(NULL));
     for (int i = 0; i < mineNum; ) {
-        posRelativeX = rand() % mapLengthArr[0];
-        posRelativeZ = rand() % mapLengthArr[1];
-        if (checkMinePos(posRelativeX, posRelativeZ) == true && (posRelativeX != relativePlayerPos[0] || posRelativeZ != relativePlayerPos[1])) {
-            mineState[posRelativeX][posRelativeZ] = false;
-            mineAbsoluteValue[i] = Converter::translateToAbsolute(posRelativeX, posRelativeZ);
+        posRelativeX = rand() % mapArray[0];
+        posRelativeZ = rand() % mapArray[1];
+        if (checkMinePos(posRelativeX, posRelativeZ) == false && (posRelativeX != playerRelativeX || posRelativeZ != playerRelativeZ)) {
+            mineState[posRelativeX][posRelativeZ] = true;
+            mineNumMapping[posRelativeX][posRelativeZ] = i;
+            mineStateArray->mineNumState[i] = true;
+            mineStateArray->mineAbsoluteValue[i] = Converter::translateToAbsolute(posRelativeX, posRelativeZ);
             i += 1;
         }
     }
 };
 
 bool Mine::checkMinePos(int posRelativeX, int posRelativeZ) {
-    int maxPosX = mapBlockX - 1;
-    int maxPosZ = mapBlockZ - 1;
+    int maxPosX = mapArray[0] - 1;
+    int maxPosZ = mapArray[1] - 1;
 
     if (posRelativeX < 0 || posRelativeX > maxPosX || posRelativeZ < 0 || posRelativeZ > maxPosZ) {
-        return true;
+        return false;
     }
-    if (mineState[posRelativeX][posRelativeZ] == true) {
-        return true;
+    else{
+        return mineState[posRelativeX][posRelativeZ];
     }
-    else { return false; }
 };
 
 void Mine::drawMine() {
     for (int i = 0; i < mineNum; i++) {
-        DrawCube(mineAbsoluteValue[i], 0.7f, 0.7f, 0.7f, BLUE);
+        if(mineStateArray->mineNumState[i] == true) {
+            DrawCube(mineStateArray->mineAbsoluteValue[i], 0.7f, 0.7f, 0.7f, BLUE);
+        }
     }
 };
