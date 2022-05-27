@@ -11,7 +11,7 @@ int mapZLength;
 Vector3 Converter::translateToAbsolute(int relativePosX, int relativePosZ) {
     float absolutePosX = 0.5f - mapXLength / 2.0f + relativePosX;
     float absolutePosZ = 0.5f - mapZLength / 2.0f + relativePosZ;
-    Vector3 absoluteVector{ absolutePosX, 0.0f, absolutePosZ };
+    Vector3 absoluteVector{absolutePosX, 0.0f, absolutePosZ};
     return absoluteVector;
 }
 

@@ -20,7 +20,7 @@ int main(void)
 {
     // My Initialization
     Converter::setMapLength(10, 10);
-    Player* player = new Player(0, 0);
+    Player* player = new Player(0, 0, 70);
     Timer* timer = new Timer();                         // Start Timer
     timer->StartTimer(5.0f);                            // Set   Timer
     char remainTime[30];
@@ -30,6 +30,7 @@ int main(void)
     mine->landMine(4, 4);
     Score* score = new Score();
     char printScore[10];
+    char printDefuseKit[10];
     char printCheck[10];
     int count = 0;
     //--------------------------------------------------------------------------------------
@@ -67,9 +68,11 @@ int main(void)
 
         //----------------------------------------------------------------------------------
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
+        if (IsKeyPressed((KEY_E))) player->defuseBomb(mine);
         //----------------------------------------------------------------------------------
         //Player move
         player->movePlayer();
+        player->choiceFocus();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -79,6 +82,7 @@ int main(void)
         BeginMode3D(camera);
 
         DrawGrid(10, 1.0f);
+        player->drawFocus();
         player->drawPlayer();
         mine->drawMine();
         count = player->checkMine(mine);
@@ -100,6 +104,8 @@ int main(void)
         // Score Draw
         sprintf_s(printScore, "%d", score->getScore());
         DrawText(printScore, 750, 20, 10, textColor);
+        sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
+        DrawText(printDefuseKit, 750, 50, 10, textColor);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
