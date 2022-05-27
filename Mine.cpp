@@ -32,6 +32,12 @@ void Mine::landMine(int playerBlockX, int playerBlockZ) {
 };
 
 bool Mine::checkMinePos(int posRelativeX, int posRelativeZ) {
+    int maxPosX = mapBlockX - 1;
+    int maxPosZ = mapBlockZ - 1;
+
+    if (posRelativeX < 0 || posRelativeX > maxPosX || posRelativeZ < 0 || posRelativeZ > maxPosZ) {
+        return true;
+    }
     if (mineState[posRelativeX][posRelativeZ] == true) {
         return true;
     }
