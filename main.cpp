@@ -34,6 +34,8 @@ int main(void)
     char printDefuseKit[10];
     char printCheck[10];
     int count = 0;
+    bool pause = false;
+    int frameCounter = 0;
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -56,7 +58,10 @@ int main(void)
 
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
+    // Load Texture
+    Texture2D pauseTexture = LoadTexture("../ resource/pause.png");
+    Rectangle pauseBounds = {750, 150, (float)pauseTexture.width, (float)pauseTexture.height};
+    //--------------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
@@ -68,8 +73,15 @@ int main(void)
             textColor = BLACK;
 
         //----------------------------------------------------------------------------------
+        // Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
         if (IsKeyPressed((KEY_E))) player->defuseBomb(mine);
+        if (CheckCollisionPointRec(GetMousePosition(), pauseBounds))
+            if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                if (pause) pause = false;
+                else pause = true;
+            }
+        frameCounter += 1;
         //----------------------------------------------------------------------------------
         //Player move
         player->movePlayer();
@@ -107,12 +119,16 @@ int main(void)
         DrawText(printScore, 750, 20, 10, textColor);
         sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
         DrawText(printDefuseKit, 750, 50, 10, textColor);
+        // Pause Draw
+        DrawTexture(pauseTexture, 750, 150, WHITE);
+        if (pause && ((frameCounter/30)%2)) DrawText("PAUSED", 350, 200, 30, GRAY);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    UnloadTexture(pauseTexture);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
