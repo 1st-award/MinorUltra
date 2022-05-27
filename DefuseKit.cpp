@@ -17,7 +17,8 @@ int DefuseKit::getDefuseKit() {
 
 bool DefuseKit::defuseBomb(int relativePosX, int relativePosZ, Mine *mine) {
     defuseKitNumber -= 1;
-    if (!(mine->checkMinePos(relativePosX, relativePosZ))) {
+    if (mine->checkMinePos(relativePosX, relativePosZ)) {
+        mine->setMineState(relativePosX, relativePosZ, false);
         return true;
     }
     else return false;
