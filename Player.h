@@ -17,6 +17,7 @@ public:
     void choiceFocus();
     void defuseBomb(Mine*);
     bool isStepOnMine(Mine*);
+    int checkMine(Mine*);
     int* getRelativePlayerPos();
 
 private:
@@ -29,6 +30,5 @@ private:
     void limitMove();
     void limitFocus();
 };
-
 
 #endif //MINORULTRA_PLAYER_H

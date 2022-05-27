@@ -8,7 +8,7 @@ Mine::Mine(int num, int mx, int mz) {
     mineState.resize(mapBlockX, std::vector<bool>(mapBlockZ, true));
 };
 
-void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state){
+void Mine::setMineState(int posRelativeX, int posRelativeZ, bool state) {
     mineState[posRelativeX][posRelativeZ] = state;
 }
 

@@ -31,6 +31,8 @@ int main(void)
     Score* score = new Score();
     char printScore[10];
     char printDefuseKit[10];
+    char printCheck[10];
+    int count = 0;
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -59,7 +61,7 @@ int main(void)
     {
         // Update
         UpdateCamera(&camera);
-        if(timer->GetTimer() < 5)
+        if (timer->GetTimer() < 5)
             textColor = RED;
         else
             textColor = BLACK;
@@ -83,8 +85,12 @@ int main(void)
         player->drawFocus();
         player->drawPlayer();
         mine->drawMine();
+        count = player->checkMine(mine);
 
         EndMode3D();
+        //Check Draw
+        sprintf_s(printCheck, "%d", count);
+        DrawText(printCheck, 20, 40, 30, GRAY);
         // Time Draw
         if (timer->TimeDone()) {
             DrawText(timeOut, 20, 20, 10, textColor);

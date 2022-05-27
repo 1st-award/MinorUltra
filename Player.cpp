@@ -14,7 +14,26 @@ Player::Player(int playerPosX, int playerPosZ, int defuseKitNumber) {
     playerSize = 0.7f;
     DefuseKit::setDefuseKit(defuseKitNumber);
 }
-
+int Player::checkMine(Mine* mine) {
+    int result = 0;
+    bool count[8]{};
+    if (IsKeyDown(KEY_SPACE)) {
+        count[0] = mine->checkMinePos(relativePosX - 1, relativePosZ - 1);
+        count[1] = mine->checkMinePos(relativePosX, relativePosZ - 1);
+        count[2] = mine->checkMinePos(relativePosX + 1, relativePosZ - 1);
+        count[3] = mine->checkMinePos(relativePosX - 1, relativePosZ);
+        count[4] = mine->checkMinePos(relativePosX + 1, relativePosZ);
+        count[5] = mine->checkMinePos(relativePosX - 1, relativePosZ + 1);
+        count[6] = mine->checkMinePos(relativePosX, relativePosZ + 1);
+        count[7] = mine->checkMinePos(relativePosX + 1, relativePosZ + 1);
+        for (int i = 0; i < 8; i++) {
+            if (count[i] == false) {
+                result += 1;
+            }
+        }
+        return result;
+    }
+}
 void Player::movePlayer() {
     if (IsKeyPressed(KEY_D)) {
         relativePosX += 1;
@@ -101,4 +120,3 @@ int *Player::getRelativePlayerPos() {
     playerPosArr[1] = relativePosZ;
     return playerPosArr;
 }
-
