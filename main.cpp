@@ -43,7 +43,7 @@ int main(void) {
     char printScore[10];
     //--------------------------------------------------------------------------------------
     // Others
-    int GAME_MODE = 3;
+    int GAME_MODE = 0;   // default 0
     const int GAME_TITLE = 0;
     const int GAME_OVER = 1;
     const int GAME_WIN = 2;
@@ -84,7 +84,7 @@ int main(void) {
         else
             textColor = BLACK;
         //----------------------------------------------------------------------------------
-        // Key, Mouse Event
+        // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
         if (IsKeyPressed((KEY_E))) player->defuseBomb(mine);
         if (CheckCollisionPointRec(GetMousePosition(), pauseBounds))
@@ -104,8 +104,16 @@ int main(void) {
         ClearBackground(RAYWHITE);
         if (GAME_MODE == GAME_TITLE) {
             // Game Title Display
-            // TODO 게임 타이틀 구현
-
+            char titleText[] = "MineSweeper";
+            char startText[] = "Press Enter to start";
+            int titlePosX = screenWidth / 2 - MeasureText(titleText, 60) / 2;
+            int startPosX = screenWidth / 2 - MeasureText(startText, 30) / 2;
+            DrawText(titleText, titlePosX, screenHeight/4, 60, GRAY);
+            if (((frameCounter / 30) % 2)) {
+                DrawText(startText, startPosX , screenHeight/1.5, 30, GRAY);
+            }
+            // Key Event
+            if (IsKeyPressed(KEY_ENTER))    GAME_MODE = GAME_PLAY;
         }
         if (GAME_MODE == GAME_OVER) {
             // TODO 게임 오버 구현
