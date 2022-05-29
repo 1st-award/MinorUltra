@@ -58,7 +58,7 @@ int main(void) {
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera free");
+    InitWindow(screenWidth, screenHeight, "Minesweeper");
 
     // Define the camera to look into our 3d world
     Camera3D camera = {0};
