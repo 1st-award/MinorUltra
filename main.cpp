@@ -15,16 +15,46 @@
 #include "Timer.h"
 #include "Mine.h"
 
+// Global Variable
+Player* player;
+Mine* mine;
+Timer* timer;
+Camera3D camera = {0};
+//--------------------------------------------------------------------------------------
+
 typedef struct Level {
     Texture2D levelTexture;
     int mineNum;
     int defuseNum;
-    int time;
-    Vector2 map;
+    float time;
+    int mapScale;
+    float cameraPovY;
 };
+
 
 int getCenterPosX(char *text, int fontSize, int screenWidth) {
     return screenWidth / 2 - MeasureText(text, fontSize) / 2;
+}
+
+void initializeData(Level &level) {
+    // Initialization
+    Converter::setMapLength(level.mapScale, level.mapScale);
+    // Player
+    player = new Player(level.mineNum);
+    int *playerRelativeArray = player->getRelativePlayerPos();
+    //--------------------------------------------------------------------------------------
+    // Mine
+    mine = new Mine(level.mineNum);
+    mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
+    //--------------------------------------------------------------------------------------
+    timer = new Timer();
+    timer->StartTimer(level.time);
+}
+
+void resetData(Player* player, Mine* mine, Timer* timer) {
+    delete (player);
+    delete (mine);
+    delete (timer);
 }
 
 
@@ -33,21 +63,15 @@ int main(void) {
     Converter::setMapLength(10, 10);
     //--------------------------------------------------------------------------------------
     // Player
-    Player *player = new Player(70);
-    int *playerRelativeArray = player->getRelativePlayerPos();
     int mineScanCount;
     char printDefuseKit[10];
     char printMineScanCount[10];
     char printScore[10];
     //--------------------------------------------------------------------------------------
     // Mine
-    Mine *mine = new Mine(70);              //Mine(mineNum)
-    mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
     char printMineCount[10];
     //--------------------------------------------------------------------------------------
     // Timer
-    Timer *timer = new Timer();                         // Start Timer
-    timer->StartTimer(999.0f);                            // Set Timer
     char remainTime[30];
     //--------------------------------------------------------------------------------------
     // Map
@@ -75,7 +99,6 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Minesweeper");
 
     // Define the camera to look into our 3d world
-    Camera3D camera = {0};
     camera.position = Vector3{0.0f, 15.0f, 0.0f}; // Camera position
     camera.target = Vector3{0.0f, 0.0f, 0.0f};      // Camera looking at point
     camera.up = Vector3{0.0f, 1.0f, 0.0f};          // Camera up vector (rotation towards target)
@@ -109,21 +132,18 @@ int main(void) {
     Sound explodeSound = LoadSound("../resources/explosion.mp3");
     Sound foundMineSound = LoadSound("../resources/foundmine.mp3");
     Sound enterSound = LoadSound("../resources/enter.mp3");
+    //----------------------------------------------------------------------------------
     // Level
-    Level levelArr[4] = {{levelEasyTexture, 10, 30, 300, Vector2{10, 10}},
-                         {levelNormalTexture, 30, 35, 300, Vector2 {10, 10}},
-                         {levelHardTexture, 60, 65, 50, Vector2 {30, 30}},
-                         {levelInsaneTexture, 100, 100, 100, Vector2 {30, 30}}};
+    Level levelArr[4] = {{levelEasyTexture,   10,  30,  300.0f, 10, 45.0f},
+                         {levelNormalTexture, 30,  35,  300.0f, 10, 45.0f},
+                         {levelHardTexture,   60,  65,  50.0f,  14, 60.0f},
+                         {levelInsaneTexture, 100, 100, 100.0f, 20, 80.0f}};
     //----------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
         // Update
         UpdateCamera(&camera);
-        if (timer->GetTimer() < 5)
-            textColor = RED;
-        else
-            textColor = BLACK;
         //----------------------------------------------------------------------------------
         // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
@@ -179,6 +199,8 @@ int main(void) {
                 GAME_DIFF += 1;
             }
             if (IsKeyDown(KEY_ENTER)) {
+                initializeData(levelArr[GAME_DIFF]);
+                camera.fovy = levelArr[GAME_DIFF].cameraPovY;
                 PlaySound(enterSound);
                 GAME_MODE = GAME_PLAY;
             }
@@ -201,12 +223,12 @@ int main(void) {
             //----------------------------------------------------------------------------------
             // Time
             DrawTexture(timeTexture, rectLineWidth * 0.3f, rectLineHeight * 0.85f, RAYWHITE);
-            sprintf_s(remainTime, "%d", levelArr[GAME_DIFF].time);
+            sprintf_s(remainTime, "%d", int(levelArr[GAME_DIFF].time));
             DrawText(remainTime, rectLineWidth * 0.55f, rectLineHeight * 0.85f, 30, GRAY);
             //----------------------------------------------------------------------------------
             // Map Scale
             DrawTexture(gridTexture, rectLineWidth * 0.3f, rectLineHeight * 0.95f, RAYWHITE);
-            sprintf_s(printMapSize, "%d X %d", int(levelArr[GAME_DIFF].map.x), int(levelArr[GAME_DIFF].map.y));
+            sprintf_s(printMapSize, "%d X %d", levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].mapScale);
             DrawText(printMapSize, rectLineWidth * 0.55f, rectLineHeight * 0.95f, 30, GRAY);
             //----------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------
@@ -241,6 +263,10 @@ int main(void) {
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
+            if (timer->GetTimer() < 5)
+                textColor = RED;
+            else
+                textColor = BLACK;
             // Player Event
             if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) ||
                 timer->TimeDone())
@@ -255,8 +281,8 @@ int main(void) {
             //-------------------------------------------------------------------------------------
             // Draw 3D
             BeginMode3D(camera);
-            // TODO 게임 타일 구현
-            DrawGrid(10, 1.0f);
+
+            DrawGrid(int(levelArr[GAME_DIFF].mapScale), 1.0f);
             // Player Draw
             player->drawFocus();
             player->drawPlayer();
@@ -322,6 +348,7 @@ int main(void) {
     UnloadTexture(levelNormalTexture);
     UnloadTexture(levelHardTexture);
     UnloadTexture(levelInsaneTexture);
+    UnloadTexture(gridTexture);
     // Sound
     UnloadSound(moveSound);
     UnloadSound(explodeSound);
@@ -333,4 +360,3 @@ int main(void) {
 
     return 0;
 }
-
