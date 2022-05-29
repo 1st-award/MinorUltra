@@ -15,78 +15,47 @@
 #include "Timer.h"
 #include "Mine.h"
 
+// Global Variable
+Player *player;
+Mine *mine;
+Timer *timer;
+Camera3D camera = {0};
+//--------------------------------------------------------------------------------------
+
+typedef struct Level {
+    Texture2D levelTexture;
+    int mineNum;
+    int defuseNum;
+    float time;
+    int mapScale;
+    float cameraPovY;
+};
+
+
 int getCenterPosX(char *text, int fontSize, int screenWidth) {
     return screenWidth / 2 - MeasureText(text, fontSize) / 2;
 }
 
-typedef struct widgetByDifficult {
-    Vector2 screenSize;
-    Vector2 remainMineTexture;
-    Vector2 remainMineWidget;
-    Vector2 timeTexture;
-    Vector2 timeWidget;
-    Vector2 scoreTexture;
-    Vector2 scoreWidget;
-    Vector2 defuseCountTexture;
-    Vector2 defuseCountWidget;
-    Vector2 mineScanTexture;
-    Vector2 mineScanWidget;
-    Vector2 pauseTexture;
-    Vector2 pauseWidget;
-} widgetByDifficult;
 
-typedef struct widgetParameterStruct{
-    char *remainMine;
-    char *timeOut;
-    char *remainTime;
-    char *printScore;
-    char *printDefuseKit;
-    char *printMineScanCount;
-} widgetParameterStruct;
+void initializeData(Level &level) {
+    // Initialization
+    Converter::setMapLength(level.mapScale, level.mapScale);
+    // Player
+    player = new Player(level.mineNum);
+    int *playerRelativeArray = player->getRelativePlayerPos();
+    //--------------------------------------------------------------------------------------
+    // Mine
+    mine = new Mine(level.mineNum);
+    mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
+    //--------------------------------------------------------------------------------------
+    timer = new Timer();
+    timer->StartTimer(level.time);
+}
 
-typedef struct textureStruct{
-    Texture remainMineTexture;
-    Texture timeTexture;
-    Texture scoreTexture;
-    Texture defuseKitTexture;
-    Texture mineScanTexture;
-    Texture pauseTexture;
-} textureStruct;
-
-void drawWidget(widgetByDifficult widgetPerDifficult, widgetParameterStruct widgetParameter,textureStruct textureArray, Timer *timer, bool pause, int frameCounter, Color textColor){
-    SetWindowSize(widgetPerDifficult.screenSize.x, widgetPerDifficult.screenSize.y);
-    // Widget
-    // Mine Widget
-    DrawTexture(textureArray.remainMineTexture, widgetPerDifficult.remainMineTexture.x, widgetPerDifficult.remainMineTexture.y, WHITE);
-    DrawText(widgetParameter.remainMine, widgetPerDifficult.remainMineWidget.x, widgetPerDifficult.remainMineWidget.y, 20, GRAY);
-    //--------------------------------------------------------------------------------------
-    // Time Widget
-    DrawTexture(textureArray.timeTexture, widgetPerDifficult.timeTexture.x, widgetPerDifficult.timeTexture.y, WHITE);
-    if (!pause) {
-        timer->UpdateTimer();                  // Update Timer
-    }
-    if (timer->TimeDone())
-        DrawText(widgetParameter.timeOut, widgetPerDifficult.timeWidget.x, widgetPerDifficult.timeWidget.y, 20, textColor);
-    else {
-        DrawText(widgetParameter.remainTime, widgetPerDifficult.timeWidget.x, widgetPerDifficult.timeWidget.y, 20, textColor);
-    }
-    //--------------------------------------------------------------------------------------
-    // Score Widget
-    DrawTexture(textureArray.scoreTexture, widgetPerDifficult.scoreTexture.x, widgetPerDifficult.scoreTexture.y, WHITE);
-    DrawText(widgetParameter.printScore, widgetPerDifficult.scoreWidget.x, widgetPerDifficult.scoreWidget.y, 20, BLACK);
-    //--------------------------------------------------------------------------------------
-    // DefuseCount Widget
-    DrawTexture(textureArray.defuseKitTexture, widgetPerDifficult.defuseCountTexture.x, widgetPerDifficult.defuseCountTexture.y, WHITE);
-    DrawText(widgetParameter.printDefuseKit, widgetPerDifficult.defuseCountWidget.x, widgetPerDifficult.defuseCountWidget.y, 20, BLACK);
-    //--------------------------------------------------------------------------------------
-    // MineScanCount Widget
-    DrawTexture(textureArray.mineScanTexture, widgetPerDifficult.mineScanTexture.x, widgetPerDifficult.mineScanTexture.y, WHITE);
-    DrawText(widgetParameter.printMineScanCount, widgetPerDifficult.mineScanWidget.x, widgetPerDifficult.mineScanWidget.y, 30, GRAY);
-    //--------------------------------------------------------------------------------------
-    // Pause Widget
-    DrawTexture(textureArray.pauseTexture, widgetPerDifficult.pauseTexture.x, widgetPerDifficult.pauseTexture.y, WHITE);
-    if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", widgetPerDifficult.pauseWidget.x, widgetPerDifficult.pauseWidget.y, 30, GRAY);
-    //--------------------------------------------------------------------------------------
+void resetData() {
+    delete (player);
+    delete (mine);
+    delete (timer);
 }
 
 int main(void) {
@@ -106,24 +75,20 @@ int main(void) {
     Converter::setMapLength(10, 10);
     //--------------------------------------------------------------------------------------
     // Player
-    Player *player = new Player(70);
-    int *playerRelativeArray = player->getRelativePlayerPos();
     int mineScanCount;
     char printDefuseKit[10];
     char printMineScanCount[10];
     char printScore[10];
     //--------------------------------------------------------------------------------------
     // Mine
-    Mine *mine = new Mine(70);              //Mine(mineNum)
-    mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
-    char remainMine[10];
+    char printMineCount[10];
     //--------------------------------------------------------------------------------------
     // Timer
-    Timer *timer = new Timer();                         // Start Timer
-    timer->StartTimer(999.0f);                            // Set Timer
     char remainTime[30];
-    char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
+    // Map
+    char printMapSize[10];
+    //----------------------------------------------------------------------------------
     // Others
     Color textColor = BLACK;
     unsigned int GAME_MODE = 0;   // default 0
@@ -140,13 +105,12 @@ int main(void) {
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 450;
+    const int screenHeight = 550;
 
     InitWindow(screenWidth, screenHeight, "Minesweeper");
 
     // Define the camera to look into our 3d world
-    Camera3D camera = {0};
     camera.position = Vector3{0.0f, 15.0f, 0.0f}; // Camera position
     camera.target = Vector3{0.0f, 0.0f, 0.0f};      // Camera looking at point
     camera.up = Vector3{0.0f, 1.0f, 0.0f};          // Camera up vector (rotation towards target)
@@ -164,13 +128,17 @@ int main(void) {
     Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
     Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
     Texture2D pauseTexture = LoadTexture("../resources/pause.png");
-    textureArray.remainMineTexture = remainMineTexture;
-    textureArray.timeTexture = timeTexture;
-    textureArray.scoreTexture = scoreTexture;
-    textureArray.defuseKitTexture = defuseKitTexture;
-    textureArray.mineScanTexture = mineScanTexture;
-    textureArray.pauseTexture = pauseTexture;
-    Rectangle pauseBounds = {widgetPerDifficult[0].pauseTexture.x, widgetPerDifficult[0].pauseTexture.y, (float) pauseTexture.width, (float) pauseTexture.height};
+    Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
+    Texture2D remainMineTexture = LoadTexture("../resources/mine.png");
+    Texture2D timeTexture = LoadTexture("../resources/time.png");
+    Texture2D scoreTexture = LoadTexture("../resources/score.png");
+    Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
+    Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
+    Texture2D levelEasyTexture = LoadTexture("../resources/easy.png");
+    Texture2D levelNormalTexture = LoadTexture("../resources/normal.png");
+    Texture2D levelHardTexture = LoadTexture("../resources/hard.png");
+    Texture2D levelInsaneTexture = LoadTexture("../resources/insane.png");
+    Texture2D gridTexture = LoadTexture("../resources/grid.png");
     //--------------------------------------------------------------------------------------
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
@@ -181,16 +149,18 @@ int main(void) {
     Sound explodeSound = LoadSound("../resources/explosion.mp3");
     Sound foundMineSound = LoadSound("../resources/foundmine.mp3");
     Sound enterSound = LoadSound("../resources/enter.mp3");
-    //--------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
+    // Level
+    Level levelArr[4] = {{levelEasyTexture,   10,  30,  300.0f, 10, 45.0f},
+                         {levelNormalTexture, 30,  35,  300.0f, 10, 45.0f},
+                         {levelHardTexture,   60,  65,  50.0f,  14, 60.0f},
+                         {levelInsaneTexture, 100, 100, 100.0f, 20, 80.0f}};
+    //----------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
         // Update
         UpdateCamera(&camera);
-        if (timer->GetTimer() < 5)
-            textColor = RED;
-        else
-            textColor = BLACK;
         //----------------------------------------------------------------------------------
         // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
@@ -227,14 +197,14 @@ int main(void) {
             }
         }
         if (GAME_MODE == GAME_SELECT) {
-            float rectLineWidth = screenWidth * 0.6f;
-            float rectLineHeight = screenHeight * 0.6f;
+            float rectLineWidth = screenWidth * 0.85f;
+            float rectLineHeight = screenHeight * 0.85f;
             float rectLinePosX = screenWidth / 2 - rectLineWidth / 2;
             float rectLinePosY = screenHeight / 2 - rectLineHeight / 2;
-            char* difficult[] = {"EASY", "NORMAL", "HARD", "INSANE"};
+            char *difficult[] = {"EASY", "NORMAL", "HARD", "INSANE"};
             int diffPosX;
-            int diffPosY = screenWidth / 6;
-            Rectangle rect{ rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
+            int diffPosY = screenWidth / 8;
+            Rectangle rect{rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
             DrawRectangleLinesEx(rect, 6, BLACK);
 
             if (IsKeyPressed(KEY_LEFT)) {
@@ -245,29 +215,66 @@ int main(void) {
                 PlaySoundMulti(pressKeySound);
                 GAME_DIFF += 1;
             }
-            if (IsKeyDown(KEY_ENTER)){
+            if (IsKeyDown(KEY_ENTER)) {
+                initializeData(levelArr[GAME_DIFF]);
+                camera.fovy = levelArr[GAME_DIFF].cameraPovY;
                 PlaySound(enterSound);
                 GAME_MODE = GAME_PLAY;
             }
-            diffPosX = getCenterPosX(difficult[GAME_DIFF%4], 40, GetScreenWidth());
-            DrawText(difficult[GAME_DIFF%4], diffPosX, diffPosY, 40, BLACK);
+            GAME_DIFF %= 4;
+            // Draw Level Info
+            // Level Texture
+            diffPosX = getCenterPosX(difficult[GAME_DIFF % 4], 40, GetScreenWidth());
+            DrawTexture(levelArr[GAME_DIFF].levelTexture, diffPosX - 50, diffPosY, RAYWHITE);
+            DrawText(difficult[GAME_DIFF % 4], diffPosX, diffPosY, 40, BLACK);
+            //----------------------------------------------------------------------------------
+            // Mine Number
+            DrawTexture(remainMineTexture, rectLineWidth * 0.3f, rectLineHeight * 0.65f, RAYWHITE);
+            sprintf_s(printMineCount, "%d", levelArr[GAME_DIFF].mineNum);
+            DrawText(printMineCount, rectLineWidth * 0.55f, rectLineHeight * 0.65f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Defuse Number
+            DrawTexture(defuseKitTexture, rectLineWidth * 0.3f, rectLineHeight * 0.75f, RAYWHITE);
+            sprintf_s(printDefuseKit, "%d", levelArr[GAME_DIFF].defuseNum);
+            DrawText(printDefuseKit, rectLineWidth * 0.55f, rectLineHeight * 0.75f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Time
+            DrawTexture(timeTexture, rectLineWidth * 0.3f, rectLineHeight * 0.85f, RAYWHITE);
+            sprintf_s(remainTime, "%d", int(levelArr[GAME_DIFF].time));
+            DrawText(remainTime, rectLineWidth * 0.55f, rectLineHeight * 0.85f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Map Scale
+            DrawTexture(gridTexture, rectLineWidth * 0.3f, rectLineHeight * 0.95f, RAYWHITE);
+            sprintf_s(printMapSize, "%d X %d", levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].mapScale);
+            DrawText(printMapSize, rectLineWidth * 0.55f, rectLineHeight * 0.95f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------
         }
         if (GAME_MODE == GAME_OVER) {
             // Game Over Display
             char ggTitleText[] = "GAME OVER";
             char ggSubTitleText[] = "You need more luck";
+            char restartText[] = "Press 'R' to restart";
             char score[15];
             sprintf_s(score, "Score: %d", player->getScore());
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
             int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
             int scorePosX = getCenterPosX(score, 30, GetScreenWidth());
+            int restartPosX = getCenterPosX(restartText, 30, GetScreenWidth());
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.001f));
             DrawText(ggTitleText, titlePosX, screenHeight / 4, 60, GRAY);
             DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2.5, 30, GRAY);
             DrawText(score, scorePosX, screenHeight / 1.5, 30, GRAY);
+            if (((frameCounter / 30) % 2)) DrawText(restartText, restartPosX, screenHeight / 1.25, 30, GRAY);
             if (!SoundExplode) {
                 PlaySoundMulti(explodeSound);
                 SoundExplode = true;
+            }
+            if (IsKeyPressed(KEY_R)) {
+                SoundExplode = false;
+                resetData();
+                initializeData(levelArr[GAME_DIFF]);
+                GAME_MODE = GAME_PLAY;
             }
         }
         if (GAME_MODE == GAME_WIN) {
@@ -282,8 +289,14 @@ int main(void) {
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
+            if (timer->GetTimer() < 5)
+                textColor = RED;
+            else
+                textColor = BLACK;
             // Player Event
-            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) || timer->TimeDone()) GAME_MODE = GAME_OVER;
+            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) ||
+                timer->TimeDone())
+                GAME_MODE = GAME_OVER;
             if (!mine->getMineNumber()) GAME_MODE = GAME_WIN;
             if (IsKeyDown(KEY_SPACE)) {
                 mineScanCount = player->checkMine(mine);
@@ -294,8 +307,8 @@ int main(void) {
             //-------------------------------------------------------------------------------------
             // Draw 3D
             BeginMode3D(camera);
-            // TODO 게임 타일 구현
-            DrawGrid(10, 1.0f);
+
+            DrawGrid(int(levelArr[GAME_DIFF].mapScale), 1.0f);
             // Player Draw
             player->drawFocus();
             player->drawPlayer();
@@ -305,28 +318,42 @@ int main(void) {
             //--------------------------------------------------------------------------------------
             // Widget
             // Mine Widget
-            sprintf_s(remainMine, "%d", mine->getMineNumber());
-            widgetParameter.remainMine = remainMine;
-            //--------------------------------------------------------------------------------------
-            // Time Widget
-            sprintf_s(remainTime, "%.2f", timer->GetTimer());
-            widgetParameter.remainTime = remainTime;
-            widgetParameter.timeOut = timeOut;
-            //--------------------------------------------------------------------------------------
-            // Score Widget
-            sprintf_s(printScore, "%d", player->getScore());
-            widgetParameter.printScore = printScore;
+            sprintf_s(printMineCount, "%d", mine->getMineNumber());
+            DrawText(printMineCount, 35, 20, 20, GRAY);
+            DrawTexture(remainMineTexture, 0, 10, RAYWHITE);
             //--------------------------------------------------------------------------------------
             // DefuseCount Widget
             sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
-            widgetParameter.printDefuseKit = printDefuseKit;
+            DrawText(printDefuseKit, 100, 20, 20, GRAY);
+            DrawTexture(defuseKitTexture, 65, 10, RAYWHITE);
             //--------------------------------------------------------------------------------------
-            // MineScan Widget
+            // Time Widget
+            if (!pause) {
+                timer->UpdateTimer();                  // Update Timer
+            }
+            if (timer->TimeDone())
+                sprintf_s(remainTime, "Time out");
+            else {
+                sprintf_s(remainTime, "%.2f", timer->GetTimer());
+            }
+            int timeTextCenterPosX = getCenterPosX(remainTime, 20, GetScreenWidth());
+            DrawTexture(timeTexture, 210, 0, RAYWHITE);
+            DrawText(remainTime, timeTextCenterPosX, 35, 20, textColor);
+            //--------------------------------------------------------------------------------------
+            // Score Widget
+            sprintf_s(printScore, "%d", player->getScore());
+            DrawText(printScore, 400, 35, 20, GRAY);
+            DrawTexture(scoreTexture, 400, 0, RAYWHITE);
+            //--------------------------------------------------------------------------------------
+            // MineScanCount Widget
             sprintf_s(printMineScanCount, "%d", mineScanCount);
-            widgetParameter.printMineScanCount = printMineScanCount;
+            DrawText(printMineScanCount, 245, 510, 30, GRAY);
+            DrawTexture(mineScanTexture, 210, 510, RAYWHITE);
             //--------------------------------------------------------------------------------------
-            // Draw Widget
-            drawWidget(widgetPerDifficult[0], widgetParameter, textureArray, timer, pause, frameCounter, textColor);
+            // Pause Widget
+            DrawTexture(pauseTexture, 0, 510, WHITE);
+            int pauseTextCenter = getCenterPosX("PAUSED", 30, GetScreenWidth());
+            if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", pauseTextCenter, 200, 30, GRAY);
             //--------------------------------------------------------------------------------------
             if (timer->TimeDone()) {
                 GAME_MODE = GAME_OVER;
@@ -346,6 +373,11 @@ int main(void) {
     UnloadTexture(scoreTexture);
     UnloadTexture(defuseKitTexture);
     UnloadTexture(pauseTexture);
+    UnloadTexture(levelEasyTexture);
+    UnloadTexture(levelNormalTexture);
+    UnloadTexture(levelHardTexture);
+    UnloadTexture(levelInsaneTexture);
+    UnloadTexture(gridTexture);
     // Sound
     UnloadSound(moveSound);
     UnloadSound(explodeSound);
@@ -357,4 +389,3 @@ int main(void) {
 
     return 0;
 }
-
