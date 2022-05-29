@@ -58,3 +58,14 @@ void Mine::drawMine() {
         }
     }
 };
+
+int Mine::getMineNumber() {
+    int mineCount = 0;
+    for(int i = 0; i < mapArray[0]; ++i) {
+        for(int j = 0; j < mapArray[1]; ++j) {
+            if (mineState[i][j])
+                mineCount += 1;
+        }
+    }
+    return mineCount;
+}

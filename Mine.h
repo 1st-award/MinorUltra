@@ -31,6 +31,8 @@ public:
 
     bool checkMinePos(int, int);
 
+    int getMineNumber();
+
 private:
     int mineNum;
     int *mapArray;

@@ -82,7 +82,7 @@ int main(void) {
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
     InitAudioDevice();      // Initialize audio device
-    SetMasterVolume(0.35);
+    SetMasterVolume(0.3);
     Sound pressKeySound = LoadSound("../resources/presskey.mp3");
     Sound moveSound = LoadSound("../resources/move.mp3");         // Load WAV audio file
     Sound explodeSound = LoadSound("../resources/explosion.mp3");
@@ -189,11 +189,12 @@ int main(void) {
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
             // Player Event
+            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) || timer->TimeDone()) GAME_MODE = GAME_OVER;
+            if (!mine->getMineNumber()) GAME_MODE = GAME_WIN;
             if (IsKeyDown(KEY_SPACE)) {
                 mineScanCount = player->checkMine(mine);
             } else mineScanCount = 0;
             if (IsKeyPressed((KEY_E))) player->defuseMine(mine, foundMineSound);
-            if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
             player->movePlayer(moveSound);
             player->choiceFocus();
             //-------------------------------------------------------------------------------------
@@ -214,14 +215,15 @@ int main(void) {
             DrawText(printMineScanCount, 20, 40, 30, GRAY);
             //--------------------------------------------------------------------------------------
             // Time Widget
-            if (timer->TimeDone()) {
-                DrawText(timeOut, 20, 20, 10, textColor);
-                GAME_MODE = GAME_OVER;
-            } else if (!pause) {
+            if (!pause) {
                 timer->UpdateTimer();                  // Update Timer
             }
-            sprintf_s(remainTime, "%.2f", timer->GetTimer());
-            DrawText(remainTime, 20, 20, 10, textColor);
+            if (timer->TimeDone())
+                DrawText(timeOut, 20, 20, 10, textColor);
+            else {
+                sprintf_s(remainTime, "%.2f", timer->GetTimer());
+                DrawText(remainTime, 20, 20, 10, textColor);
+            }
             //--------------------------------------------------------------------------------------
             // Score Widget
             sprintf_s(printScore, "%d", player->getScore());
