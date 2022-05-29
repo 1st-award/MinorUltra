@@ -15,6 +15,14 @@
 #include "Timer.h"
 #include "Mine.h"
 
+typedef struct Level {
+    Texture2D levelTexture;
+    int mineNum;
+    int defuseNum;
+    int time;
+    Vector2 map;
+};
+
 int getCenterPosX(char *text, int fontSize, int screenWidth) {
     return screenWidth / 2 - MeasureText(text, fontSize) / 2;
 }
@@ -42,6 +50,9 @@ int main(void) {
     timer->StartTimer(999.0f);                            // Set Timer
     char remainTime[30];
     //--------------------------------------------------------------------------------------
+    // Map
+    char printMapSize[10];
+    //----------------------------------------------------------------------------------
     // Others
     Color textColor = BLACK;
     unsigned int GAME_MODE = 0;   // default 0
@@ -84,10 +95,10 @@ int main(void) {
     Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
     Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
     Texture2D levelEasyTexture = LoadTexture("../resources/easy.png");
-    Texture2D levelNormalTexture = LoadTexture("../resources/easy.png");
-    Texture2D levelHardTexture = LoadTexture("../resources/easy.png");
-    Texture2D levelInsaneTexture = LoadTexture("../resources/easy.png");
-
+    Texture2D levelNormalTexture = LoadTexture("../resources/normal.png");
+    Texture2D levelHardTexture = LoadTexture("../resources/hard.png");
+    Texture2D levelInsaneTexture = LoadTexture("../resources/insane.png");
+    Texture2D gridTexture = LoadTexture("../resources/grid.png");
     //--------------------------------------------------------------------------------------
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
@@ -98,6 +109,12 @@ int main(void) {
     Sound explodeSound = LoadSound("../resources/explosion.mp3");
     Sound foundMineSound = LoadSound("../resources/foundmine.mp3");
     Sound enterSound = LoadSound("../resources/enter.mp3");
+    // Level
+    Level levelArr[4] = {{levelEasyTexture, 10, 30, 300, Vector2{10, 10}},
+                         {levelNormalTexture, 30, 35, 300, Vector2 {10, 10}},
+                         {levelHardTexture, 60, 65, 50, Vector2 {30, 30}},
+                         {levelInsaneTexture, 100, 100, 100, Vector2 {30, 30}}};
+    //----------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
@@ -143,14 +160,14 @@ int main(void) {
             }
         }
         if (GAME_MODE == GAME_SELECT) {
-            float rectLineWidth = screenWidth * 0.6f;
-            float rectLineHeight = screenHeight * 0.6f;
+            float rectLineWidth = screenWidth * 0.85f;
+            float rectLineHeight = screenHeight * 0.85f;
             float rectLinePosX = screenWidth / 2 - rectLineWidth / 2;
             float rectLinePosY = screenHeight / 2 - rectLineHeight / 2;
-            char* difficult[] = {"EASY", "NORMAL", "HARD", "INSANE"};
+            char *difficult[] = {"EASY", "NORMAL", "HARD", "INSANE"};
             int diffPosX;
-            int diffPosY = screenWidth / 6;
-            Rectangle rect{ rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
+            int diffPosY = screenWidth / 8;
+            Rectangle rect{rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
             DrawRectangleLinesEx(rect, 6, BLACK);
 
             if (IsKeyPressed(KEY_LEFT)) {
@@ -161,12 +178,38 @@ int main(void) {
                 PlaySoundMulti(pressKeySound);
                 GAME_DIFF += 1;
             }
-            if (IsKeyDown(KEY_ENTER)){
+            if (IsKeyDown(KEY_ENTER)) {
                 PlaySound(enterSound);
                 GAME_MODE = GAME_PLAY;
             }
-            diffPosX = getCenterPosX(difficult[GAME_DIFF%4], 40, GetScreenWidth());
-            DrawText(difficult[GAME_DIFF%4], diffPosX, diffPosY, 40, BLACK);
+            GAME_DIFF %= 4;
+            // Draw Level Info
+            // Level Texture
+            diffPosX = getCenterPosX(difficult[GAME_DIFF % 4], 40, GetScreenWidth());
+            DrawTexture(levelArr[GAME_DIFF].levelTexture, diffPosX - 50, diffPosY, RAYWHITE);
+            DrawText(difficult[GAME_DIFF % 4], diffPosX, diffPosY, 40, BLACK);
+            //----------------------------------------------------------------------------------
+            // Mine Number
+            DrawTexture(remainMineTexture, rectLineWidth * 0.3f, rectLineHeight * 0.65f, RAYWHITE);
+            sprintf_s(printMineCount, "%d", levelArr[GAME_DIFF].mineNum);
+            DrawText(printMineCount, rectLineWidth * 0.55f, rectLineHeight * 0.65f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Defuse Number
+            DrawTexture(defuseKitTexture, rectLineWidth * 0.3f, rectLineHeight * 0.75f, RAYWHITE);
+            sprintf_s(printDefuseKit, "%d", levelArr[GAME_DIFF].defuseNum);
+            DrawText(printDefuseKit, rectLineWidth * 0.55f, rectLineHeight * 0.75f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Time
+            DrawTexture(timeTexture, rectLineWidth * 0.3f, rectLineHeight * 0.85f, RAYWHITE);
+            sprintf_s(remainTime, "%d", levelArr[GAME_DIFF].time);
+            DrawText(remainTime, rectLineWidth * 0.55f, rectLineHeight * 0.85f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            // Map Scale
+            DrawTexture(gridTexture, rectLineWidth * 0.3f, rectLineHeight * 0.95f, RAYWHITE);
+            sprintf_s(printMapSize, "%d X %d", int(levelArr[GAME_DIFF].map.x), int(levelArr[GAME_DIFF].map.y));
+            DrawText(printMapSize, rectLineWidth * 0.55f, rectLineHeight * 0.95f, 30, GRAY);
+            //----------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------
         }
         if (GAME_MODE == GAME_OVER) {
             // Game Over Display
@@ -199,7 +242,9 @@ int main(void) {
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
             // Player Event
-            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) || timer->TimeDone()) GAME_MODE = GAME_OVER;
+            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) ||
+                timer->TimeDone())
+                GAME_MODE = GAME_OVER;
             if (!mine->getMineNumber()) GAME_MODE = GAME_WIN;
             if (IsKeyDown(KEY_SPACE)) {
                 mineScanCount = player->checkMine(mine);
