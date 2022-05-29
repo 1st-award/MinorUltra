@@ -28,6 +28,7 @@ public:
     void landMine(int, int);
 
     void drawMine();
+    void drawDefusedArea();
 
     bool checkMinePos(int, int);
 
