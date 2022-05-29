@@ -88,7 +88,6 @@ int main(void) {
         //----------------------------------------------------------------------------------
         // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
-        if (IsKeyPressed((KEY_E))) player->defuseMine(mine);
         if (CheckCollisionPointRec(GetMousePosition(), pauseBounds))
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (pause) pause = false;
@@ -142,34 +141,37 @@ int main(void) {
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
-            //Player move
-            player->movePlayer();
+            // Player Event
+            if (IsKeyPressed(KEY_SPACE)) player->checkMine(mine);
+            if (IsKeyPressed((KEY_E))) player->defuseMine(mine);
             if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
+            player->movePlayer();
             player->choiceFocus();
+            //-------------------------------------------------------------------------------------
             // Draw 3D
             BeginMode3D(camera);
             // TODO 게임 타일 구현
-
             DrawGrid(10, 1.0f);
+            // Player Draw
             player->drawFocus();
             player->drawPlayer();
+            //--------------------------------------------------------------------------------------
             // mine->drawMine(); // Test draw
             EndMode3D();
             //--------------------------------------------------------------------------------------
             // Widget
             // Mine Widget
-            mineScanCount = player->checkMine(mine);
             sprintf_s(printMineScanCount, "%d", mineScanCount);
             DrawText(printMineScanCount, 20, 40, 30, GRAY);
             //--------------------------------------------------------------------------------------
             // Time Widget
             if (timer->TimeDone()) {
                 DrawText(timeOut, 20, 20, 10, textColor);
-            } else {
+            } else if (!pause){
                 timer->UpdateTimer();                  // Update Timer
-                sprintf_s(remainTime, "%.2f", timer->GetTimer());
-                DrawText(remainTime, 20, 20, 10, textColor);
             }
+            sprintf_s(remainTime, "%.2f", timer->GetTimer());
+            DrawText(remainTime, 20, 20, 10, textColor);
             //--------------------------------------------------------------------------------------
             // Score Widget
             sprintf_s(printScore, "%d", player->getScore());
