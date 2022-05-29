@@ -35,12 +35,12 @@ int main(void) {
     // Mine
     Mine *mine = new Mine(70);              //Mine(mineNum)
     mine->landMine(playerRelativeArray[0], playerRelativeArray[1]);
+    char printMineCount[10];
     //--------------------------------------------------------------------------------------
     // Timer
     Timer *timer = new Timer();                         // Start Timer
     timer->StartTimer(999.0f);                            // Set Timer
     char remainTime[30];
-    char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
     // Others
     Color textColor = BLACK;
@@ -58,8 +58,8 @@ int main(void) {
     //--------------------------------------------------------------------------------------
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 450;
+    const int screenHeight = 550;
 
     InitWindow(screenWidth, screenHeight, "Minesweeper");
 
@@ -77,7 +77,17 @@ int main(void) {
     //--------------------------------------------------------------------------------------
     // Load Texture
     Texture2D pauseTexture = LoadTexture("../resources/pause.png");
-    Rectangle pauseBounds = {750, 150, (float) pauseTexture.width, (float) pauseTexture.height};
+    Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
+    Texture2D remainMineTexture = LoadTexture("../resources/mine.png");
+    Texture2D timeTexture = LoadTexture("../resources/time.png");
+    Texture2D scoreTexture = LoadTexture("../resources/score.png");
+    Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
+    Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
+    Texture2D levelEasyTexture = LoadTexture("../resources/easy.png");
+    Texture2D levelNormalTexture = LoadTexture("../resources/easy.png");
+    Texture2D levelHardTexture = LoadTexture("../resources/easy.png");
+    Texture2D levelInsaneTexture = LoadTexture("../resources/easy.png");
+
     //--------------------------------------------------------------------------------------
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
@@ -211,35 +221,42 @@ int main(void) {
             //--------------------------------------------------------------------------------------
             // Widget
             // Mine Widget
-            sprintf_s(printMineScanCount, "%d", mineScanCount);
-            DrawText(printMineScanCount, 20, 40, 30, GRAY);
+            sprintf_s(printMineCount, "%d", mine->getMineNumber());
+            DrawText(printMineCount, 35, 20, 20, GRAY);
+            DrawTexture(remainMineTexture, 0, 10, RAYWHITE);
+            //--------------------------------------------------------------------------------------
+            // DefuseCount Widget
+            sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
+            DrawText(printDefuseKit, 100, 20, 20, GRAY);
+            DrawTexture(defuseKitTexture, 65, 10, RAYWHITE);
             //--------------------------------------------------------------------------------------
             // Time Widget
             if (!pause) {
                 timer->UpdateTimer();                  // Update Timer
             }
             if (timer->TimeDone())
-                DrawText(timeOut, 20, 20, 10, textColor);
+                sprintf_s(remainTime, "Time out");
             else {
                 sprintf_s(remainTime, "%.2f", timer->GetTimer());
-                DrawText(remainTime, 20, 20, 10, textColor);
             }
+            int timeTextCenterPosX = getCenterPosX(remainTime, 20, GetScreenWidth());
+            DrawTexture(timeTexture, 210, 0, RAYWHITE);
+            DrawText(remainTime, timeTextCenterPosX, 35, 20, textColor);
             //--------------------------------------------------------------------------------------
             // Score Widget
             sprintf_s(printScore, "%d", player->getScore());
-            DrawText(printScore, 750, 20, 10, textColor);
-            //--------------------------------------------------------------------------------------
-            // DefuseCount Widget
-            sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
-            DrawText(printDefuseKit, 750, 50, 10, textColor);
+            DrawText(printScore, 400, 35, 20, GRAY);
+            DrawTexture(scoreTexture, 400, 0, RAYWHITE);
             //--------------------------------------------------------------------------------------
             // MineScanCount Widget
-            // TODO 마인 스캔 위젯 (우석)
-
+            sprintf_s(printMineScanCount, "%d", mineScanCount);
+            DrawText(printMineScanCount, 245, 510, 30, GRAY);
+            DrawTexture(mineScanTexture, 210, 510, RAYWHITE);
             //--------------------------------------------------------------------------------------
             // Pause Widget
-            DrawTexture(pauseTexture, 750, 150, WHITE);
-            if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", 350, 200, 30, GRAY);
+            DrawTexture(pauseTexture, 0, 510, WHITE);
+            int pauseTextCenter = getCenterPosX("PAUSED", 30, GetScreenWidth());
+            if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", pauseTextCenter, 200, 30, GRAY);
             //--------------------------------------------------------------------------------------
             //--------------------------------------------------------------------------------------
         }
@@ -250,7 +267,16 @@ int main(void) {
     // De-Initialization
     //--------------------------------------------------------------------------------------
     // Texture
+    UnloadTexture(remainMineTexture);
+    UnloadTexture(timeTexture);
+    UnloadTexture(scoreTexture);
+    UnloadTexture(scoreTexture);
+    UnloadTexture(defuseKitTexture);
     UnloadTexture(pauseTexture);
+    UnloadTexture(levelEasyTexture);
+    UnloadTexture(levelNormalTexture);
+    UnloadTexture(levelHardTexture);
+    UnloadTexture(levelInsaneTexture);
     // Sound
     UnloadSound(moveSound);
     UnloadSound(explodeSound);
