@@ -59,6 +59,15 @@ void Mine::drawMine() {
     }
 };
 
+void Mine::drawDefusedArea() {
+    for (int i = 0; i < mineNum; i++) {
+        if (mineStateArray->mineNumState[i] == false) {
+            DrawCube(mineStateArray->mineAbsoluteValue[i], 1.0f, 0, 1.0f, GREEN);
+            DrawCubeWires(mineStateArray->mineAbsoluteValue[i], 1.0f, 0, 1.0f, GRAY);
+        }
+    }
+};
+
 int Mine::getMineNumber() {
     int mineCount = 0;
     for(int i = 0; i < mapArray[0]; ++i) {
