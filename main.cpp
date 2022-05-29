@@ -16,9 +16,9 @@
 #include "Mine.h"
 
 // Global Variable
-Player* player;
-Mine* mine;
-Timer* timer;
+Player *player;
+Mine *mine;
+Timer *timer;
 Camera3D camera = {0};
 //--------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ void initializeData(Level &level) {
     timer->StartTimer(level.time);
 }
 
-void resetData(Player* player, Mine* mine, Timer* timer) {
+void resetData() {
     delete (player);
     delete (mine);
     delete (timer);
@@ -237,18 +237,27 @@ int main(void) {
             // Game Over Display
             char ggTitleText[] = "GAME OVER";
             char ggSubTitleText[] = "You need more luck";
+            char restartText[] = "Press 'R' to restart";
             char score[15];
             sprintf_s(score, "Score: %d", player->getScore());
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
             int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
             int scorePosX = getCenterPosX(score, 30, GetScreenWidth());
+            int restartPosX = getCenterPosX(restartText, 30, GetScreenWidth());
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.001f));
             DrawText(ggTitleText, titlePosX, screenHeight / 4, 60, GRAY);
             DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2.5, 30, GRAY);
             DrawText(score, scorePosX, screenHeight / 1.5, 30, GRAY);
+            if (((frameCounter / 30) % 2)) DrawText(restartText, restartPosX, screenHeight / 1.25, 30, GRAY);
             if (!SoundExplode) {
                 PlaySoundMulti(explodeSound);
                 SoundExplode = true;
+            }
+            if (IsKeyPressed(KEY_R)) {
+                SoundExplode = false;
+                resetData();
+                initializeData(levelArr[GAME_DIFF]);
+                GAME_MODE = GAME_PLAY;
             }
         }
         if (GAME_MODE == GAME_WIN) {
