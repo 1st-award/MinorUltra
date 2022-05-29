@@ -49,6 +49,7 @@ int main(void) {
     const int GAME_OVER = 1;
     const int GAME_WIN = 2;
     const int GAME_PLAY = 3;
+    float fadeOut = 0.0f;
     bool pause = false;
     int frameCounter = 0;
     //--------------------------------------------------------------------------------------
@@ -94,12 +95,8 @@ int main(void) {
                 else pause = true;
             }
         if (IsKeyPressed(KEY_Z)) GAME_MODE = GAME_WIN;  // temp key
-        mineScanCount = player->checkMine(mine);
         frameCounter += 1;
         //----------------------------------------------------------------------------------
-        //Player move
-        player->movePlayer();
-        player->choiceFocus();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -123,6 +120,13 @@ int main(void) {
             char ggSubTitleText[] = "You need more luck";
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
             int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
+            BeginMode3D(camera);
+            DrawGrid(10, 1.0f);
+            player->drawPlayer();
+            player->drawFocus();
+            mine->drawMine();
+            EndMode3D();
+            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut+=0.005f));
             DrawText(ggTitleText, titlePosX, screenHeight/4, 60, GRAY);
             DrawText(ggSubTitleText, subtitlePosX, screenHeight/2, 30, GRAY);
         }
@@ -138,6 +142,10 @@ int main(void) {
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
+            //Player move
+            player->movePlayer();
+            if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
+            player->choiceFocus();
             // Draw 3D
             BeginMode3D(camera);
             // TODO 게임 타일 구현
@@ -150,6 +158,7 @@ int main(void) {
             //--------------------------------------------------------------------------------------
             // Widget
             // Mine Widget
+            mineScanCount = player->checkMine(mine);
             sprintf_s(printMineScanCount, "%d", mineScanCount);
             DrawText(printMineScanCount, 20, 40, 30, GRAY);
             //--------------------------------------------------------------------------------------

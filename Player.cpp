@@ -111,7 +111,7 @@ void Player::defuseMine(Mine* mine) {
 }
 
 bool Player::isStepOnMine(Mine *mine) {
-    return !(mine->checkMinePos(relativePosX, relativePosZ));
+    return mine->checkMinePos(relativePosX, relativePosZ);
 }
 
 int *Player::getRelativePlayerPos() {
