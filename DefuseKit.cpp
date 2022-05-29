@@ -3,7 +3,7 @@
 //
 
 #include "DefuseKit.h"
-#include "Mine.h"
+
 
 DefuseKit::DefuseKit() {}
 
@@ -20,6 +20,5 @@ bool DefuseKit::defuseBomb(int relativePosX, int relativePosZ, Mine *mine) {
     if (mine->checkMinePos(relativePosX, relativePosZ)) {
         mine->setMineState(relativePosX, relativePosZ, false);
         return true;
-    }
-    else return false;
+    } else return false;
 }

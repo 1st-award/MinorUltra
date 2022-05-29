@@ -9,7 +9,9 @@
 class Score {
 public:
     Score();
+
     void addScore(bool defusingSuccess);
+
     int getScore();
 
 private:

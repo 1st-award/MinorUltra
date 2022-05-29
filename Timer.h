@@ -5,12 +5,16 @@
 #ifndef MINORULTRA_TIMER_H
 #define MINORULTRA_TIMER_H
 
+#include "raylib.h"
 
 class Timer {
 public:
     void StartTimer(float);
+
     void UpdateTimer();
+
     float GetTimer();
+
     bool TimeDone();
 
 private:
