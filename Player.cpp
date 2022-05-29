@@ -14,26 +14,26 @@ Player::Player(int defuseKitNumber) {
     playerSize = 0.7f;
     DefuseKit::setDefuseKit(defuseKitNumber);
 }
-int Player::checkMine(Mine* mine) {
+
+int Player::checkMine(Mine *mine) {
     int result = 0;
     bool count[8]{};
-    if (IsKeyDown(KEY_SPACE)) {
-        count[0] = mine->checkMinePos(relativePosX - 1, relativePosZ - 1);
-        count[1] = mine->checkMinePos(relativePosX, relativePosZ - 1);
-        count[2] = mine->checkMinePos(relativePosX + 1, relativePosZ - 1);
-        count[3] = mine->checkMinePos(relativePosX - 1, relativePosZ);
-        count[4] = mine->checkMinePos(relativePosX + 1, relativePosZ);
-        count[5] = mine->checkMinePos(relativePosX - 1, relativePosZ + 1);
-        count[6] = mine->checkMinePos(relativePosX, relativePosZ + 1);
-        count[7] = mine->checkMinePos(relativePosX + 1, relativePosZ + 1);
-        for (int i = 0; i < 8; i++) {
-            if (count[i] == true) {
-                result += 1;
-            }
+    count[0] = mine->checkMinePos(relativePosX - 1, relativePosZ - 1);
+    count[1] = mine->checkMinePos(relativePosX, relativePosZ - 1);
+    count[2] = mine->checkMinePos(relativePosX + 1, relativePosZ - 1);
+    count[3] = mine->checkMinePos(relativePosX - 1, relativePosZ);
+    count[4] = mine->checkMinePos(relativePosX + 1, relativePosZ);
+    count[5] = mine->checkMinePos(relativePosX - 1, relativePosZ + 1);
+    count[6] = mine->checkMinePos(relativePosX, relativePosZ + 1);
+    count[7] = mine->checkMinePos(relativePosX + 1, relativePosZ + 1);
+    for (int i = 0; i < 8; i++) {
+        if (count[i] == true) {
+            result += 1;
         }
-        return result;
     }
+    return result;
 }
+
 void Player::movePlayer() {
     if (IsKeyPressed(KEY_D)) {
         relativePosX += 1;
@@ -69,7 +69,7 @@ void Player::drawPlayer() {
 }
 
 void Player::drawFocus() {
-    if(relativeFocusX >= 0 && relativeFocusZ >= 0) {
+    if (relativeFocusX >= 0 && relativeFocusZ >= 0) {
         const Vector3 &focusPos = Converter::translateToAbsolute(relativeFocusX, relativeFocusZ);
         DrawCubeWires(focusPos, playerSize, playerSize, playerSize, GREEN);
     }
@@ -95,22 +95,23 @@ void Player::limitFocus() {
     int distancePosX = relativeFocusX - relativePosX;
     int distancePosZ = relativeFocusZ - relativePosZ;
 
-    if(distancePosX > 1 || relativeFocusX > maxPosX)
+    if (distancePosX > 1 || relativeFocusX > maxPosX)
         relativeFocusX -= 1;
-    else if(distancePosX < -1 || relativeFocusX < 0)
+    else if (distancePosX < -1 || relativeFocusX < 0)
         relativeFocusX += 1;
-    else if(distancePosZ > 1 || relativeFocusZ > maxPosZ)
+    else if (distancePosZ > 1 || relativeFocusZ > maxPosZ)
         relativeFocusZ -= 1;
-    else if(distancePosZ < -1 || relativeFocusZ < 0)
+    else if (distancePosZ < -1 || relativeFocusZ < 0)
         relativeFocusZ += 1;
 }
 
-void Player::defuseBomb(Mine* mine) {
+void Player::defuseMine(Mine *mine) {
     bool result = DefuseKit::defuseBomb(relativeFocusX, relativeFocusZ, mine);
+    Score::addScore(result);
 }
 
 bool Player::isStepOnMine(Mine *mine) {
-    return !(mine->checkMinePos(relativePosX, relativePosZ));
+    return mine->checkMinePos(relativePosX, relativePosZ);
 }
 
 int *Player::getRelativePlayerPos() {
@@ -121,10 +122,14 @@ int *Player::getRelativePlayerPos() {
 }
 
 void Player::setRandomSpawn() {
-    int* mapLengthArr = Converter::getMapLength();
+    int *mapLengthArr = Converter::getMapLength();
     int mapLengthX = mapLengthArr[0];
     int mapLengthZ = mapLengthArr[1];
-    srand((unsigned int)time(NULL));
+    srand((unsigned int) time(NULL));
     relativePosX = rand() % mapLengthX;
     relativePosZ = rand() % mapLengthZ;
+}
+
+int Player::getScore() {
+    return Score::getScore();
 }

@@ -14,7 +14,11 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Mine.h"
-#include "Score.h"
+
+int getCenterPosX(char* text, int fontSize, int screenWidth) {
+    return screenWidth / 2 - MeasureText(text, fontSize) / 2;
+}
+
 
 int main(void) {
     // My Initialization
@@ -26,6 +30,7 @@ int main(void) {
     int mineScanCount = 0;
     char printDefuseKit[10];
     char printMineScanCount[10];
+    char printScore[10];
     //--------------------------------------------------------------------------------------
     // Mine
     Mine *mine = new Mine(70);              //Mine(mineNum)
@@ -37,17 +42,14 @@ int main(void) {
     char remainTime[30];
     char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
-    // Score
-    Score *score = new Score();
-    Color textColor = BLACK;
-    char printScore[10];
-    //--------------------------------------------------------------------------------------
     // Others
-    int GAME_MODE = 3;
+    Color textColor = BLACK;
+    int GAME_MODE = 0;   // default 0
     const int GAME_TITLE = 0;
     const int GAME_OVER = 1;
     const int GAME_WIN = 2;
     const int GAME_PLAY = 3;
+    float fadeOut = 0.0f;
     bool pause = false;
     int frameCounter = 0;
     //--------------------------------------------------------------------------------------
@@ -56,7 +58,7 @@ int main(void) {
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera free");
+    InitWindow(screenWidth, screenHeight, "Minesweeper");
 
     // Define the camera to look into our 3d world
     Camera3D camera = {0};
@@ -84,46 +86,76 @@ int main(void) {
         else
             textColor = BLACK;
         //----------------------------------------------------------------------------------
-        // Key, Mouse Event
+        // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
-        if (IsKeyPressed((KEY_E))) player->defuseBomb(mine);
         if (CheckCollisionPointRec(GetMousePosition(), pauseBounds))
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (pause) pause = false;
                 else pause = true;
             }
-        mineScanCount = player->checkMine(mine);
+        if (IsKeyPressed(KEY_Z)) GAME_MODE = GAME_WIN;  // temp key
         frameCounter += 1;
         //----------------------------------------------------------------------------------
-        //Player move
-        player->movePlayer();
-        player->choiceFocus();
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
         if (GAME_MODE == GAME_TITLE) {
             // Game Title Display
-            // TODO 게임 타이틀 구현
-
+            char titleText[] = "MineSweeper";
+            char startText[] = "Press Enter to start";
+            int titlePosX = getCenterPosX(titleText, 60, GetScreenWidth());
+            int startPosX = getCenterPosX(startText, 30, GetScreenWidth());
+            DrawText(titleText, titlePosX, screenHeight/4, 60, GRAY);
+            if ((frameCounter / 30) % 2) {
+                DrawText(startText, startPosX , screenHeight/1.5, 30, GRAY);
+            }
+            // Key Event
+            if (IsKeyPressed(KEY_ENTER))    GAME_MODE = GAME_PLAY;
         }
         if (GAME_MODE == GAME_OVER) {
-            // TODO 게임 오버 구현
-
+            // Game Over Display
+            char ggTitleText[] = "GAME OVER";
+            char ggSubTitleText[] = "You need more luck";
+            int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
+            int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
+            BeginMode3D(camera);
+            DrawGrid(10, 1.0f);
+            player->drawPlayer();
+            player->drawFocus();
+            mine->drawMine();
+            EndMode3D();
+            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut+=0.005f));
+            DrawText(ggTitleText, titlePosX, screenHeight/4, 60, GRAY);
+            DrawText(ggSubTitleText, subtitlePosX, screenHeight/2, 30, GRAY);
         }
         if (GAME_MODE == GAME_WIN) {
-            // TODO 게임 승리 구현
-
+            // Game Win Display
+            char winTitleText[] = "YOU WIN!!!";
+            char scoreText[15] = "Score: ";
+            sprintf_s(scoreText, "Score: %d", player->getScore());
+            int winTitlePosX = getCenterPosX(winTitleText, 60, GetScreenWidth());
+            int scorePosX = getCenterPosX(scoreText, 30, GetScreenWidth());
+            DrawText(winTitleText, winTitlePosX, screenHeight/4, 60, GRAY);
+            DrawText(scoreText, scorePosX, screenHeight/1.5, 30, GRAY);
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
+            // Player Event
+            if (IsKeyPressed(KEY_SPACE)) player->checkMine(mine);
+            if (IsKeyPressed((KEY_E))) player->defuseMine(mine);
+            if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
+            player->movePlayer();
+            player->choiceFocus();
+            //-------------------------------------------------------------------------------------
             // Draw 3D
             BeginMode3D(camera);
             // TODO 게임 타일 구현
-
             DrawGrid(10, 1.0f);
+            // Player Draw
             player->drawFocus();
             player->drawPlayer();
+            //--------------------------------------------------------------------------------------
             // mine->drawMine(); // Test draw
             EndMode3D();
             //--------------------------------------------------------------------------------------
@@ -135,14 +167,15 @@ int main(void) {
             // Time Widget
             if (timer->TimeDone()) {
                 DrawText(timeOut, 20, 20, 10, textColor);
-            } else {
+                GAME_MODE = GAME_OVER;
+            } else if (!pause){
                 timer->UpdateTimer();                  // Update Timer
-                sprintf_s(remainTime, "%.2f", timer->GetTimer());
-                DrawText(remainTime, 20, 20, 10, textColor);
             }
+            sprintf_s(remainTime, "%.2f", timer->GetTimer());
+            DrawText(remainTime, 20, 20, 10, textColor);
             //--------------------------------------------------------------------------------------
             // Score Widget
-            sprintf_s(printScore, "%d", score->getScore());
+            sprintf_s(printScore, "%d", player->getScore());
             DrawText(printScore, 750, 20, 10, textColor);
             //--------------------------------------------------------------------------------------
             // DefuseCount Widget
@@ -171,3 +204,4 @@ int main(void) {
 
     return 0;
 }
+
