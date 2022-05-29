@@ -45,7 +45,7 @@ int main(void) {
     // Others
     Color textColor = BLACK;
     unsigned int GAME_MODE = 0;   // default 0
-    int GAME_DIFF = 0;
+    unsigned int GAME_DIFF = 0;
     const int GAME_TITLE = 0;
     const int GAME_SELECT = 1;
     const int GAME_OVER = 2;
@@ -80,11 +80,14 @@ int main(void) {
     Rectangle pauseBounds = {750, 150, (float) pauseTexture.width, (float) pauseTexture.height};
     //--------------------------------------------------------------------------------------
     // Load Audio
+    // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
     InitAudioDevice();      // Initialize audio device
     SetMasterVolume(0.35);
+    Sound pressKeySound = LoadSound("../resources/presskey.mp3");
     Sound moveSound = LoadSound("../resources/move.mp3");         // Load WAV audio file
     Sound explodeSound = LoadSound("../resources/explosion.mp3");
     Sound foundMineSound = LoadSound("../resources/foundmine.mp3");
+    Sound enterSound = LoadSound("../resources/enter.mp3");
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
     {
@@ -124,7 +127,10 @@ int main(void) {
                 DrawText(startText, startPosX, screenHeight / 1.5, 30, GRAY);
             }
             // Key Event
-            if (IsKeyPressed(KEY_ENTER)) GAME_MODE = GAME_SELECT;
+            if (IsKeyReleased(KEY_ENTER)) {
+                PlaySound(enterSound);
+                GAME_MODE = GAME_SELECT;
+            }
         }
         if (GAME_MODE == GAME_SELECT) {
             float rectLineWidth = screenWidth * 0.6f;
@@ -137,8 +143,18 @@ int main(void) {
             Rectangle rect{ rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
             DrawRectangleLinesEx(rect, 6, BLACK);
 
-            if (IsKeyPressed(KEY_LEFT)) GAME_DIFF -= 1;
-            if (IsKeyPressed(KEY_RIGHT))GAME_DIFF += 1;
+            if (IsKeyPressed(KEY_LEFT)) {
+                PlaySoundMulti(pressKeySound);
+                GAME_DIFF -= 1;
+            }
+            if (IsKeyPressed(KEY_RIGHT)) {
+                PlaySoundMulti(pressKeySound);
+                GAME_DIFF += 1;
+            }
+            if (IsKeyDown(KEY_ENTER)){
+                PlaySound(enterSound);
+                GAME_MODE = GAME_PLAY;
+            }
             diffPosX = getCenterPosX(difficult[GAME_DIFF%4], 40, GetScreenWidth());
             DrawText(difficult[GAME_DIFF%4], diffPosX, diffPosY, 40, BLACK);
         }
@@ -237,6 +253,8 @@ int main(void) {
     UnloadSound(moveSound);
     UnloadSound(explodeSound);
     UnloadSound(foundMineSound);
+    UnloadSound(enterSound);
+    UnloadSound(pressKeySound);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
