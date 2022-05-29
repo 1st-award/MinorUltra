@@ -99,7 +99,7 @@ int main(void) {
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        if (GAME_MODE != GAME_OVER)    ClearBackground(RAYWHITE);
         if (GAME_MODE == GAME_TITLE) {
             // Game Title Display
             char titleText[] = "MineSweeper";
@@ -119,13 +119,7 @@ int main(void) {
             char ggSubTitleText[] = "You need more luck";
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
             int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
-            BeginMode3D(camera);
-            DrawGrid(10, 1.0f);
-            player->drawPlayer();
-            player->drawFocus();
-            mine->drawMine();
-            EndMode3D();
-            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.005f));
+            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.001f));
             DrawText(ggTitleText, titlePosX, screenHeight / 4, 60, GRAY);
             DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2, 30, GRAY);
         }
