@@ -60,20 +60,6 @@ void resetData() {
 
 int main(void) {
     // My Initialization
-    // Struct widgetByDifficult setting
-    widgetByDifficult widgetPerDifficult[4];
-    widgetPerDifficult[0] = {Vector2{450, 550},
-                             Vector2{0,10}, Vector2{35, 20},
-                             Vector2{210,0}, Vector2{195, 35},
-                             Vector2{400,0}, Vector2{400, 35},
-                             Vector2{65,10}, Vector2{100, 20},
-                             Vector2{210,510}, Vector2{245,510},
-                             Vector2{0, 510}, Vector2{165, 250}};
-    widgetParameterStruct widgetParameter;
-    textureStruct textureArray;
-    //--------------------------------------------------------------------------------------
-    Converter::setMapLength(10, 10);
-    //--------------------------------------------------------------------------------------
     // Player
     int mineScanCount;
     char printDefuseKit[10];
@@ -129,11 +115,6 @@ int main(void) {
     Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
     Texture2D pauseTexture = LoadTexture("../resources/pause.png");
     Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
-    Texture2D remainMineTexture = LoadTexture("../resources/mine.png");
-    Texture2D timeTexture = LoadTexture("../resources/time.png");
-    Texture2D scoreTexture = LoadTexture("../resources/score.png");
-    Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
-    Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
     Texture2D levelEasyTexture = LoadTexture("../resources/easy.png");
     Texture2D levelNormalTexture = LoadTexture("../resources/normal.png");
     Texture2D levelHardTexture = LoadTexture("../resources/hard.png");
@@ -271,6 +252,7 @@ int main(void) {
                 SoundExplode = true;
             }
             if (IsKeyPressed(KEY_R)) {
+                fadeOut = 0.0f;
                 SoundExplode = false;
                 resetData();
                 initializeData(levelArr[GAME_DIFF]);
