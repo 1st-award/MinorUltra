@@ -117,11 +117,15 @@ int main(void) {
             // Game Over Display
             char ggTitleText[] = "GAME OVER";
             char ggSubTitleText[] = "You need more luck";
+            char score[15];
+            sprintf_s(score, "Score: %d", player->getScore());
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
             int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
+            int scorePosX = getCenterPosX(score, 30, GetScreenWidth());
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.001f));
             DrawText(ggTitleText, titlePosX, screenHeight / 4, 60, GRAY);
-            DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2, 30, GRAY);
+            DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2.5, 30, GRAY);
+            DrawText(score, scorePosX, screenHeight / 1.5, 30, GRAY);
         }
         if (GAME_MODE == GAME_WIN) {
             // Game Win Display
