@@ -10,7 +10,6 @@
 #include "Mine.h"
 #include "raylib.h"
 #include "Score.h"
-
 #include <time.h>
 
 class Player : public DefuseKit, Score {
@@ -19,13 +18,13 @@ public:
 
     void drawPlayer();
 
-    void movePlayer();
+    void movePlayer(Sound);
 
     void drawFocus();
 
     void choiceFocus();
 
-    void defuseMine(Mine *);
+    void defuseMine(Mine *, Sound);
 
     bool isStepOnMine(Mine *);
 

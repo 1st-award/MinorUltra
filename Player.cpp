@@ -32,14 +32,18 @@ int Player::checkMine(Mine *mine) {
     return result;
 }
 
-void Player::movePlayer() {
+void Player::movePlayer(Sound walkSound) {
     if (IsKeyPressed(KEY_D)) {
+        PlaySoundMulti(walkSound);
         relativePosX += 1;
     } else if (IsKeyPressed(KEY_A)) {
+        PlaySoundMulti(walkSound);
         relativePosX -= 1;
     } else if (IsKeyPressed(KEY_S)) {
+        PlaySoundMulti(walkSound);
         relativePosZ += 1;
     } else if (IsKeyPressed(KEY_W)) {
+        PlaySoundMulti(walkSound);
         relativePosZ -= 1;
     }
     Player::limitMove();
@@ -103,9 +107,12 @@ void Player::limitFocus() {
         relativeFocusZ += 1;
 }
 
-void Player::defuseMine(Mine *mine) {
+void Player::defuseMine(Mine *mine, Sound foundMine) {
     bool result = DefuseKit::defuseBomb(relativeFocusX, relativeFocusZ, mine);
-    Score::addScore(result);
+    if (result) {
+        Score::addScore(result);
+        PlaySoundMulti(foundMine);
+    }
 }
 
 bool Player::isStepOnMine(Mine *mine) {
