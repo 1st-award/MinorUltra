@@ -190,6 +190,7 @@ int main(void) {
             // Game Play Display
             // Player Event
             if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) || timer->TimeDone()) GAME_MODE = GAME_OVER;
+            if (!mine->getMineNumber()) GAME_MODE = GAME_WIN;
             if (IsKeyDown(KEY_SPACE)) {
                 mineScanCount = player->checkMine(mine);
             } else mineScanCount = 0;
