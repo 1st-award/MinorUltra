@@ -27,7 +27,7 @@ int main(void) {
     // Player
     Player *player = new Player(70);
     int *playerRelativeArray = player->getRelativePlayerPos();
-    int mineScanCount = 0;
+    int mineScanCount;
     char printDefuseKit[10];
     char printMineScanCount[10];
     char printScore[10];
@@ -38,7 +38,7 @@ int main(void) {
     //--------------------------------------------------------------------------------------
     // Timer
     Timer *timer = new Timer();                         // Start Timer
-    timer->StartTimer(5.0f);                            // Set   Timer
+    timer->StartTimer(999.0f);                            // Set Timer
     char remainTime[30];
     char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
@@ -142,7 +142,9 @@ int main(void) {
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
             // Player Event
-            if (IsKeyPressed(KEY_SPACE)) player->checkMine(mine);
+            if (IsKeyDown(KEY_SPACE)) {
+                mineScanCount = player->checkMine(mine);
+            } else mineScanCount = 0;
             if (IsKeyPressed((KEY_E))) player->defuseMine(mine);
             if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
             player->movePlayer();
@@ -156,7 +158,7 @@ int main(void) {
             player->drawFocus();
             player->drawPlayer();
             //--------------------------------------------------------------------------------------
-            // mine->drawMine(); // Test draw
+            mine->drawMine(); // Test draw
             EndMode3D();
             //--------------------------------------------------------------------------------------
             // Widget
