@@ -14,7 +14,11 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Mine.h"
-#include "Score.h"
+
+int getCenterPosX(char* text, int fontSize, int screenWidth) {
+    return screenWidth / 2 - MeasureText(text, fontSize) / 2;
+}
+
 
 int main(void) {
     // My Initialization
@@ -26,6 +30,7 @@ int main(void) {
     int mineScanCount = 0;
     char printDefuseKit[10];
     char printMineScanCount[10];
+    char printScore[10];
     //--------------------------------------------------------------------------------------
     // Mine
     Mine *mine = new Mine(70);              //Mine(mineNum)
@@ -37,13 +42,9 @@ int main(void) {
     char remainTime[30];
     char timeOut[] = "Time Out!!";
     //--------------------------------------------------------------------------------------
-    // Score
-    Score *score = new Score();
-    Color textColor = BLACK;
-    char printScore[10];
-    //--------------------------------------------------------------------------------------
     // Others
-    int GAME_MODE = 0;   // default 0
+    Color textColor = BLACK;
+    int GAME_MODE = 1;   // default 0
     const int GAME_TITLE = 0;
     const int GAME_OVER = 1;
     const int GAME_WIN = 2;
@@ -86,12 +87,13 @@ int main(void) {
         //----------------------------------------------------------------------------------
         // Global Key, Mouse Event
         if (IsKeyDown('Z')) timer->StartTimer(10.0f);
-        if (IsKeyPressed((KEY_E))) player->defuseBomb(mine);
+        if (IsKeyPressed((KEY_E))) player->defuseMine(mine);
         if (CheckCollisionPointRec(GetMousePosition(), pauseBounds))
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (pause) pause = false;
                 else pause = true;
             }
+        if (IsKeyPressed(KEY_Z)) GAME_MODE = GAME_WIN;
         mineScanCount = player->checkMine(mine);
         frameCounter += 1;
         //----------------------------------------------------------------------------------
@@ -106,10 +108,10 @@ int main(void) {
             // Game Title Display
             char titleText[] = "MineSweeper";
             char startText[] = "Press Enter to start";
-            int titlePosX = screenWidth / 2 - MeasureText(titleText, 60) / 2;
-            int startPosX = screenWidth / 2 - MeasureText(startText, 30) / 2;
+            int titlePosX = getCenterPosX(titleText, 60, GetScreenWidth());
+            int startPosX = getCenterPosX(startText, 30, GetScreenWidth());
             DrawText(titleText, titlePosX, screenHeight/4, 60, GRAY);
-            if (((frameCounter / 30) % 2)) {
+            if ((frameCounter / 30) % 2) {
                 DrawText(startText, startPosX , screenHeight/1.5, 30, GRAY);
             }
             // Key Event
@@ -117,11 +119,22 @@ int main(void) {
         }
         if (GAME_MODE == GAME_OVER) {
             // TODO 게임 오버 구현
-
+            char ggTitleText[] = "GAME OVER";
+            char ggSubTitleText[] = "You need more luck";
+            int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
+            int subtitlePosX = getCenterPosX(ggSubTitleText, 30, GetScreenWidth());
+            DrawText(ggTitleText, titlePosX, screenHeight/4, 60, GRAY);
+            DrawText(ggSubTitleText, subtitlePosX, screenHeight/2, 30, GRAY);
         }
         if (GAME_MODE == GAME_WIN) {
             // TODO 게임 승리 구현
-
+            char winTitleText[] = "YOU WIN!!!";
+            char scoreText[15] = "Score: ";
+            sprintf_s(scoreText, "Score: %d", player->getScore());
+            int winTitlePosX = getCenterPosX(winTitleText, 60, GetScreenWidth());
+            int scorePosX = getCenterPosX(scoreText, 30, GetScreenWidth());
+            DrawText(winTitleText, winTitlePosX, screenHeight/4, 60, GRAY);
+            DrawText(scoreText, scorePosX, screenHeight/1.5, 30, GRAY);
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
@@ -150,7 +163,7 @@ int main(void) {
             }
             //--------------------------------------------------------------------------------------
             // Score Widget
-            sprintf_s(printScore, "%d", score->getScore());
+            sprintf_s(printScore, "%d", player->getScore());
             DrawText(printScore, 750, 20, 10, textColor);
             //--------------------------------------------------------------------------------------
             // DefuseCount Widget
@@ -179,3 +192,4 @@ int main(void) {
 
     return 0;
 }
+

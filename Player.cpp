@@ -105,8 +105,9 @@ void Player::limitFocus() {
         relativeFocusZ += 1;
 }
 
-void Player::defuseBomb(Mine* mine) {
+void Player::defuseMine(Mine* mine) {
     bool result = DefuseKit::defuseBomb(relativeFocusX, relativeFocusZ, mine);
+    Score::addScore(result);
 }
 
 bool Player::isStepOnMine(Mine *mine) {
@@ -127,4 +128,8 @@ void Player::setRandomSpawn() {
     srand((unsigned int)time(NULL));
     relativePosX = rand() % mapLengthX;
     relativePosZ = rand() % mapLengthZ;
+}
+
+int Player::getScore() {
+    return Score::getScore();
 }
