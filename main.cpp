@@ -113,13 +113,15 @@ int main(void) {
     Texture2D scoreTexture = LoadTexture("../resources/score.png");
     Texture2D defuseKitTexture = LoadTexture("../resources/defusekit.png");
     Texture2D mineScanTexture = LoadTexture("../resources/minescan.png");
-    Texture2D pauseTexture = LoadTexture("../resources/pause.png");
-    Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
     Texture2D levelEasyTexture = LoadTexture("../resources/easy.png");
     Texture2D levelNormalTexture = LoadTexture("../resources/normal.png");
     Texture2D levelHardTexture = LoadTexture("../resources/hard.png");
     Texture2D levelInsaneTexture = LoadTexture("../resources/insane.png");
     Texture2D gridTexture = LoadTexture("../resources/grid.png");
+    Texture2D pauseTexture = LoadTexture("../resources/pause.png");
+    Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
+    Texture2D quitTexture = LoadTexture("../resources/quit.png");
+    Rectangle quitBounds = {(float)screenWidth - quitTexture.width, 510, (float) quitTexture.width, (float) quitTexture.height};
     //--------------------------------------------------------------------------------------
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
@@ -149,6 +151,10 @@ int main(void) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (pause) pause = false;
                 else pause = true;
+            }
+        if (CheckCollisionPointRec(GetMousePosition(), quitBounds))
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                GAME_MODE = GAME_SELECT;
             }
         if (IsKeyPressed(KEY_F1)) GAME_MODE = GAME_TITLE;  // temp key
         if (IsKeyPressed(KEY_F2)) GAME_MODE = GAME_SELECT;  // temp key
@@ -337,9 +343,8 @@ int main(void) {
             int pauseTextCenter = getCenterPosX("PAUSED", 30, GetScreenWidth());
             if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", pauseTextCenter, 200, 30, GRAY);
             //--------------------------------------------------------------------------------------
-            if (timer->TimeDone()) {
-                GAME_MODE = GAME_OVER;
-            }
+            // Quit Widget
+            DrawTexture(quitTexture, screenWidth - quitTexture.width, 510, WHITE);
             //--------------------------------------------------------------------------------------
         }
         EndDrawing();
