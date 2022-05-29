@@ -14,7 +14,9 @@ public:
 
 protected:
     DefuseKit();
+
     void setDefuseKit(int);
+
     bool defuseBomb(int, int, Mine *);
 
 private:

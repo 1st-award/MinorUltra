@@ -3,7 +3,6 @@
 //
 
 #include "Converter.h"
-#include "raylib.h"
 
 int mapXLength;
 int mapZLength;
@@ -20,8 +19,8 @@ void Converter::setMapLength(int XLength, int ZLength) {
     mapZLength = ZLength;
 }
 
-int* Converter::getMapLength() {
-    int* tempArr = new int[2];
+int *Converter::getMapLength() {
+    int *tempArr = new int[2];
     tempArr[0] = mapXLength;
     tempArr[1] = mapZLength;
     return tempArr;

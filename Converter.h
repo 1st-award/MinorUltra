@@ -14,7 +14,7 @@ public:
 
     static void setMapLength(int, int);
 
-    static int* getMapLength();
+    static int *getMapLength();
 };
 
 

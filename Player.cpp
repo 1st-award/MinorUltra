@@ -2,10 +2,8 @@
 // Created by Admin on 2022-05-25.
 //
 
-#include <time.h>
+
 #include "Player.h"
-#include "Converter.h"
-#include "Mine.h"
 
 Player::Player(int defuseKitNumber) {
     Player::setRandomSpawn();

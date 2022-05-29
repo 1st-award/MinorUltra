@@ -4,30 +4,36 @@
 
 #ifndef MINORULTRA_MINE_H
 #define MINORULTRA_MINE_H
-#include "raylib.h"
+
 #include "Converter.h"
-#include <random>
+#include "raylib.h"
 #include <ctime>
+#include <random>
+#include <time.h>
 #include <vector>
 
-typedef struct mineStateStruct{
+typedef struct mineStateStruct {
     std::vector<bool> mineNumState;
     std::vector<Vector3> mineAbsoluteValue;
 } mineStateStruct;
 
-class Mine
-{
+class Mine {
 public:
     Mine(int);
+
     void setMineState(int, int, bool);
+
     std::vector<std::vector<bool>> getMineState();
+
     void landMine(int, int);
+
     void drawMine();
+
     bool checkMinePos(int, int);
 
 private:
     int mineNum;
-    int* mapArray;
+    int *mapArray;
     std::vector<std::vector<int>> mineNumMapping;
     std::vector<std::vector<bool>> mineState;
 };

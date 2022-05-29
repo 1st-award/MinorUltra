@@ -15,7 +15,7 @@
 #include "Timer.h"
 #include "Mine.h"
 
-int getCenterPosX(char* text, int fontSize, int screenWidth) {
+int getCenterPosX(char *text, int fontSize, int screenWidth) {
     return screenWidth / 2 - MeasureText(text, fontSize) / 2;
 }
 
@@ -106,12 +106,12 @@ int main(void) {
             char startText[] = "Press Enter to start";
             int titlePosX = getCenterPosX(titleText, 60, GetScreenWidth());
             int startPosX = getCenterPosX(startText, 30, GetScreenWidth());
-            DrawText(titleText, titlePosX, screenHeight/4, 60, GRAY);
+            DrawText(titleText, titlePosX, screenHeight / 4, 60, GRAY);
             if ((frameCounter / 30) % 2) {
-                DrawText(startText, startPosX , screenHeight/1.5, 30, GRAY);
+                DrawText(startText, startPosX, screenHeight / 1.5, 30, GRAY);
             }
             // Key Event
-            if (IsKeyPressed(KEY_ENTER))    GAME_MODE = GAME_PLAY;
+            if (IsKeyPressed(KEY_ENTER)) GAME_MODE = GAME_PLAY;
         }
         if (GAME_MODE == GAME_OVER) {
             // Game Over Display
@@ -125,9 +125,9 @@ int main(void) {
             player->drawFocus();
             mine->drawMine();
             EndMode3D();
-            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut+=0.005f));
-            DrawText(ggTitleText, titlePosX, screenHeight/4, 60, GRAY);
-            DrawText(ggSubTitleText, subtitlePosX, screenHeight/2, 30, GRAY);
+            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, fadeOut += 0.005f));
+            DrawText(ggTitleText, titlePosX, screenHeight / 4, 60, GRAY);
+            DrawText(ggSubTitleText, subtitlePosX, screenHeight / 2, 30, GRAY);
         }
         if (GAME_MODE == GAME_WIN) {
             // Game Win Display
@@ -136,8 +136,8 @@ int main(void) {
             sprintf_s(scoreText, "Score: %d", player->getScore());
             int winTitlePosX = getCenterPosX(winTitleText, 60, GetScreenWidth());
             int scorePosX = getCenterPosX(scoreText, 30, GetScreenWidth());
-            DrawText(winTitleText, winTitlePosX, screenHeight/4, 60, GRAY);
-            DrawText(scoreText, scorePosX, screenHeight/1.5, 30, GRAY);
+            DrawText(winTitleText, winTitlePosX, screenHeight / 4, 60, GRAY);
+            DrawText(scoreText, scorePosX, screenHeight / 1.5, 30, GRAY);
         }
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
@@ -168,7 +168,7 @@ int main(void) {
             if (timer->TimeDone()) {
                 DrawText(timeOut, 20, 20, 10, textColor);
                 GAME_MODE = GAME_OVER;
-            } else if (!pause){
+            } else if (!pause) {
                 timer->UpdateTimer();                  // Update Timer
             }
             sprintf_s(remainTime, "%.2f", timer->GetTimer());

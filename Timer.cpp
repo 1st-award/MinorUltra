@@ -3,7 +3,6 @@
 //
 
 #include "Timer.h"
-#include "raylib.h"
 
 void Timer::StartTimer(float lifeTime) {
     Lifetime = lifeTime;
