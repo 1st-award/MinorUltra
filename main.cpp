@@ -44,7 +44,7 @@ int main(void) {
     //--------------------------------------------------------------------------------------
     // Others
     Color textColor = BLACK;
-    int GAME_MODE = 1;   // default 0
+    int GAME_MODE = 0;   // default 0
     const int GAME_TITLE = 0;
     const int GAME_OVER = 1;
     const int GAME_WIN = 2;
@@ -93,7 +93,7 @@ int main(void) {
                 if (pause) pause = false;
                 else pause = true;
             }
-        if (IsKeyPressed(KEY_Z)) GAME_MODE = GAME_WIN;
+        if (IsKeyPressed(KEY_Z)) GAME_MODE = GAME_WIN;  // temp key
         mineScanCount = player->checkMine(mine);
         frameCounter += 1;
         //----------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ int main(void) {
             if (IsKeyPressed(KEY_ENTER))    GAME_MODE = GAME_PLAY;
         }
         if (GAME_MODE == GAME_OVER) {
-            // TODO 게임 오버 구현
+            // Game Over Display
             char ggTitleText[] = "GAME OVER";
             char ggSubTitleText[] = "You need more luck";
             int titlePosX = getCenterPosX(ggTitleText, 60, GetScreenWidth());
@@ -127,7 +127,7 @@ int main(void) {
             DrawText(ggSubTitleText, subtitlePosX, screenHeight/2, 30, GRAY);
         }
         if (GAME_MODE == GAME_WIN) {
-            // TODO 게임 승리 구현
+            // Game Win Display
             char winTitleText[] = "YOU WIN!!!";
             char scoreText[15] = "Score: ";
             sprintf_s(scoreText, "Score: %d", player->getScore());
