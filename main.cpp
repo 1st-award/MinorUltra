@@ -167,6 +167,7 @@ int main(void) {
             // Time Widget
             if (timer->TimeDone()) {
                 DrawText(timeOut, 20, 20, 10, textColor);
+                GAME_MODE = GAME_OVER;
             } else if (!pause){
                 timer->UpdateTimer();                  // Update Timer
             }
