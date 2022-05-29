@@ -73,14 +73,13 @@ void drawWidget(widgetByDifficult widgetPerDifficult, widgetParameterStruct widg
     //--------------------------------------------------------------------------------------
     // Score Widget
     DrawTexture(textureArray.scoreTexture, widgetPerDifficult.scoreTexture.x, widgetPerDifficult.scoreTexture.y, WHITE);
-    DrawText(widgetParameter.printScore, widgetPerDifficult.scoreWidget.x, widgetPerDifficult.scoreWidget.y, 20, textColor);
+    DrawText(widgetParameter.printScore, widgetPerDifficult.scoreWidget.x, widgetPerDifficult.scoreWidget.y, 20, BLACK);
     //--------------------------------------------------------------------------------------
     // DefuseCount Widget
     DrawTexture(textureArray.defuseKitTexture, widgetPerDifficult.defuseCountTexture.x, widgetPerDifficult.defuseCountTexture.y, WHITE);
-    DrawText(widgetParameter.printDefuseKit, widgetPerDifficult.defuseCountWidget.x, widgetPerDifficult.defuseCountWidget.y, 20, textColor);
+    DrawText(widgetParameter.printDefuseKit, widgetPerDifficult.defuseCountWidget.x, widgetPerDifficult.defuseCountWidget.y, 20, BLACK);
     //--------------------------------------------------------------------------------------
     // MineScanCount Widget
-    // TODO 마인 스캔 위젯 (우석)
     DrawTexture(textureArray.mineScanTexture, widgetPerDifficult.mineScanTexture.x, widgetPerDifficult.mineScanTexture.y, WHITE);
     DrawText(widgetParameter.printMineScanCount, widgetPerDifficult.mineScanWidget.x, widgetPerDifficult.mineScanWidget.y, 30, GRAY);
     //--------------------------------------------------------------------------------------
@@ -322,7 +321,7 @@ int main(void) {
             sprintf_s(printDefuseKit, "%d", player->getDefuseKit());
             widgetParameter.printDefuseKit = printDefuseKit;
             //--------------------------------------------------------------------------------------
-            // 주위 마인
+            // MineScan Widget
             sprintf_s(printMineScanCount, "%d", mineScanCount);
             widgetParameter.printMineScanCount = printMineScanCount;
             //--------------------------------------------------------------------------------------
@@ -341,6 +340,11 @@ int main(void) {
     // De-Initialization
     //--------------------------------------------------------------------------------------
     // Texture
+    UnloadTexture(remainMineTexture);
+    UnloadTexture(timeTexture);
+    UnloadTexture(scoreTexture);
+    UnloadTexture(scoreTexture);
+    UnloadTexture(defuseKitTexture);
     UnloadTexture(pauseTexture);
     // Sound
     UnloadSound(moveSound);
