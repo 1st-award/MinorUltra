@@ -58,3 +58,7 @@ void Mine::drawMine() {
         }
     }
 };
+
+int Mine::getMineNumber() {
+    return mineNum;
+}

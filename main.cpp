@@ -189,11 +189,11 @@ int main(void) {
         if (GAME_MODE == GAME_PLAY) {
             // Game Play Display
             // Player Event
+            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1))) GAME_MODE = GAME_OVER;
             if (IsKeyDown(KEY_SPACE)) {
                 mineScanCount = player->checkMine(mine);
             } else mineScanCount = 0;
             if (IsKeyPressed((KEY_E))) player->defuseMine(mine, foundMineSound);
-            if (player->isStepOnMine(mine)) GAME_MODE = GAME_OVER;
             player->movePlayer(moveSound);
             player->choiceFocus();
             //-------------------------------------------------------------------------------------
