@@ -65,6 +65,7 @@ int main(void) {
     char printDefuseKit[10];
     char printMineScanCount[10];
     char printScore[10];
+    int *playerFocusPosArray;
     //--------------------------------------------------------------------------------------
     // Mine
     char printMineCount[10];
@@ -122,6 +123,15 @@ int main(void) {
     Rectangle pauseBounds = {0, 510, (float) pauseTexture.width, (float) pauseTexture.height};
     Texture2D quitTexture = LoadTexture("../resources/quit.png");
     Rectangle quitBounds = {(float)screenWidth - quitTexture.width, 510, (float) quitTexture.width, (float) quitTexture.height};
+    Texture2D playerPosETexture = LoadTexture("../resources/E.png");
+    Texture2D playerPosNETexture = LoadTexture("../resources/NE.png");
+    Texture2D playerPosNTexture = LoadTexture("../resources/N.png");
+    Texture2D playerPosNWTexture = LoadTexture("../resources/NW.png");
+    Texture2D playerPosWTexture = LoadTexture("../resources/W.png");
+    Texture2D playerPosSWTexture = LoadTexture("../resources/SW.png");
+    Texture2D playerPosSTexture = LoadTexture("../resources/S.png");
+    Texture2D playerPosSETexture = LoadTexture("../resources/SE.png");
+    Texture2D mineTexture = LoadTexture("../resources/mine.png");
     //--------------------------------------------------------------------------------------
     // Load Audio
     // https://soundspunos.com/audio/421-sounds-from-video-games-8-bit.html
@@ -299,11 +309,27 @@ int main(void) {
             DrawGrid(int(levelArr[GAME_DIFF].mapScale), 1.0f);
             // Player Draw
             player->drawFocus();
-            player->drawPlayer();
             //--------------------------------------------------------------------------------------
-            mine->drawMine(); // Test draw
             mine->drawDefusedArea();
             EndMode3D();
+            mine->drawMine(mineTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY); // Test draw
+            playerFocusPosArray = player->getRelativePlayerFocusPos();
+            if(playerFocusPosArray[0]==-1){
+                if(playerFocusPosArray[1]==-1)  player->drawPlayer(playerPosNWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==0) player->drawPlayer(playerPosWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==1) player->drawPlayer(playerPosSWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+            }
+            if(playerFocusPosArray[0]==0){
+                if(playerFocusPosArray[1]==-1)  player->drawPlayer(playerPosNTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==0) player->drawPlayer(playerPosSTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==1) player->drawPlayer(playerPosSTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+            }
+            if(playerFocusPosArray[0]==1){
+                if(playerFocusPosArray[1]==-1)  player->drawPlayer(playerPosNETexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==0) player->drawPlayer(playerPosETexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+                if(playerFocusPosArray[1]==1) player->drawPlayer(playerPosSETexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
+            }
+
             //--------------------------------------------------------------------------------------
             // Widget
             // Mine Widget
@@ -366,6 +392,15 @@ int main(void) {
     UnloadTexture(levelHardTexture);
     UnloadTexture(levelInsaneTexture);
     UnloadTexture(gridTexture);
+    UnloadTexture(playerPosETexture);
+    UnloadTexture(playerPosNETexture);
+    UnloadTexture(playerPosNTexture);
+    UnloadTexture(playerPosNWTexture);
+    UnloadTexture(playerPosWTexture);
+    UnloadTexture(playerPosSWTexture);
+    UnloadTexture(playerPosSTexture);
+    UnloadTexture(playerPosSETexture);
+    UnloadTexture(mineTexture);
     // Sound
     UnloadSound(moveSound);
     UnloadSound(explodeSound);

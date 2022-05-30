@@ -64,10 +64,8 @@ void Player::limitMove() {
         relativePosZ = maxPosZ;
 }
 
-void Player::drawPlayer() {
-    const Vector3 &playerPos = Converter::translateToAbsolute(relativePosX, relativePosZ);
-    DrawCube(playerPos, playerSize, playerSize, playerSize, RED);
-    DrawCubeWires(playerPos, playerSize, playerSize, playerSize, MAROON);
+void Player::drawPlayer(Texture2D player, int mapSize, float povy) {
+    DrawTextureEx(player, Vector2{440.0f / mapSize * relativePosX + 5, 440.0f / mapSize * relativePosZ + 55}, 0, 60.0f/povy, RAYWHITE);
 }
 
 void Player::drawFocus() {
@@ -124,6 +122,13 @@ int *Player::getRelativePlayerPos() {
     playerPosArr[0] = relativePosX;
     playerPosArr[1] = relativePosZ;
     return playerPosArr;
+}
+
+int *Player::getRelativePlayerFocusPos(){
+    int *playerFocusPosArr = new int[2];
+    playerFocusPosArr[0] = relativeFocusX - relativePosX;
+    playerFocusPosArr[1] = relativeFocusZ - relativePosZ;
+    return playerFocusPosArr;
 }
 
 void Player::setRandomSpawn() {

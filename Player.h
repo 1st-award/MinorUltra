@@ -16,7 +16,7 @@ class Player : public DefuseKit, Score {
 public:
     Player(int);
 
-    void drawPlayer();
+    void drawPlayer(Texture2D, int, float);
 
     void movePlayer(Sound);
 
@@ -33,6 +33,8 @@ public:
     int getScore();
 
     int *getRelativePlayerPos();
+
+    int *getRelativePlayerFocusPos();
 
 private:
     Vector3 playerPos;
