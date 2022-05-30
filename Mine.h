@@ -14,6 +14,7 @@
 
 typedef struct mineStateStruct {
     std::vector<bool> mineNumState;
+    std::vector<Vector2> mineRelativeValue;
     std::vector<Vector3> mineAbsoluteValue;
 } mineStateStruct;
 
@@ -27,7 +28,8 @@ public:
 
     void landMine(int, int);
 
-    void drawMine();
+    void drawMine(Texture2D, int, float);
+
     void drawDefusedArea();
 
     bool checkMinePos(int, int);

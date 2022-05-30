@@ -6,8 +6,9 @@ Mine::Mine(int num) {
     mineNum = num;
     mapArray = Converter::getMapLength();
     mineNumMapping.resize(mapArray[0], std::vector<int>(mapArray[1], -1));
-    mineStateArray->mineAbsoluteValue.resize(mineNum, Vector3{0.0f, 0.0f, 0.0f});
     mineStateArray->mineNumState.resize(mineNum, false);
+    mineStateArray->mineRelativeValue.resize(mineNum, Vector2{0.0f, 0.0f});
+    mineStateArray->mineAbsoluteValue.resize(mineNum, Vector3{0.0f, 0.0f, 0.0f});
     mineState.resize(mapArray[0], std::vector<bool>(mapArray[1], false));
 };
 
@@ -34,6 +35,7 @@ void Mine::landMine(int playerRelativeX, int playerRelativeZ) {
             mineState[posRelativeX][posRelativeZ] = true;
             mineNumMapping[posRelativeX][posRelativeZ] = i;
             mineStateArray->mineNumState[i] = true;
+            mineStateArray->mineRelativeValue[i] = Vector2{posRelativeX, posRelativeZ};
             mineStateArray->mineAbsoluteValue[i] = Converter::translateToAbsolute(posRelativeX, posRelativeZ);
             i += 1;
         }
@@ -51,10 +53,12 @@ bool Mine::checkMinePos(int posRelativeX, int posRelativeZ) {
     }
 };
 
-void Mine::drawMine() {
+void Mine::drawMine(Texture2D mine, int mapSize, float povy) {
     for (int i = 0; i < mineNum; i++) {
         if (mineStateArray->mineNumState[i] == true) {
-            DrawCube(mineStateArray->mineAbsoluteValue[i], 0.7f, 0.7f, 0.7f, BLUE);
+            DrawTextureEx(mine, Vector2{440.0f / mapSize * mineStateArray->mineRelativeValue[i].x + 5,
+                                        440.0f / mapSize * mineStateArray->mineRelativeValue[i].y + 55},
+                          0, 60.0f/povy, RAYWHITE);
         }
     }
 };
