@@ -35,7 +35,7 @@ void Mine::landMine(int playerRelativeX, int playerRelativeZ) {
             mineState[posRelativeX][posRelativeZ] = true;
             mineNumMapping[posRelativeX][posRelativeZ] = i;
             mineStateArray->mineNumState[i] = true;
-            mineStateArray->mineRelativeValue[i] = Vector2{posRelativeX, posRelativeZ};
+            mineStateArray->mineRelativeValue[i] = Vector2{(float)posRelativeX, (float)posRelativeZ};
             mineStateArray->mineAbsoluteValue[i] = Converter::translateToAbsolute(posRelativeX, posRelativeZ);
             i += 1;
         }
@@ -74,10 +74,9 @@ void Mine::drawDefusedArea() {
 
 int Mine::getMineNumber() {
     int mineCount = 0;
-    for(int i = 0; i < mapArray[0]; ++i) {
-        for(int j = 0; j < mapArray[1]; ++j) {
-            if (mineState[i][j])
-                mineCount += 1;
+    for(int i = 0; i < mineNum; ++i) {
+        if(mineStateArray->mineNumState[i] == true) {
+            mineCount += 1;
         }
     }
     return mineCount;
