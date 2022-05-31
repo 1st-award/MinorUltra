@@ -22,7 +22,7 @@ Timer *timer;
 Camera3D camera = {0};
 //--------------------------------------------------------------------------------------
 
-typedef struct Level {
+struct Level {
     Texture2D levelTexture;
     int mineNum;
     int defuseNum;
@@ -41,7 +41,7 @@ void initializeData(Level &level) {
     // Initialization
     Converter::setMapLength(level.mapScale, level.mapScale);
     // Player
-    player = new Player(level.mineNum);
+    player = new Player(level.defuseNum);
     int *playerRelativeArray = player->getRelativePlayerPos();
     //--------------------------------------------------------------------------------------
     // Mine
@@ -144,10 +144,10 @@ int main(void) {
     Sound enterSound = LoadSound("../resources/enter.mp3");
     //----------------------------------------------------------------------------------
     // Level
-    Level levelArr[4] = {{levelEasyTexture,   10,  30,  300.0f, 10, 45.0f},
-                         {levelNormalTexture, 30,  35,  300.0f, 10, 45.0f},
-                         {levelHardTexture,   60,  65,  50.0f,  14, 60.0f},
-                         {levelInsaneTexture, 100, 100, 100.0f, 20, 80.0f}};
+    Level levelArr[4] = {{levelEasyTexture,   10,  30,  125.0f, 10, 45.0f},
+                         {levelNormalTexture, 30,  35,  175.0f, 10, 45.0f},
+                         {levelHardTexture,   60,  65,  346.0f,  14, 60.0f},
+                         {levelInsaneTexture, 100, 100, 650.0f, 20, 80.0f}};
     //----------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose())        // Detect window close button or ESC key
@@ -198,7 +198,7 @@ int main(void) {
             float rectLineHeight = screenHeight * 0.85f;
             float rectLinePosX = screenWidth / 2 - rectLineWidth / 2;
             float rectLinePosY = screenHeight / 2 - rectLineHeight / 2;
-            char *difficult[] = {"EASY", "NORMAL", "HARD", "INSANE"};
+            char *difficult[] = {(char*)"EASY", (char*)"NORMAL", (char*)"HARD", (char*)"INSANE"};
             int diffPosX;
             int diffPosY = screenWidth / 8;
             Rectangle rect{rectLinePosX, rectLinePosY, rectLineWidth, rectLineHeight};
@@ -264,6 +264,7 @@ int main(void) {
             DrawText(score, scorePosX, screenHeight / 1.5, 30, GRAY);
             if (((frameCounter / 30) % 2)) DrawText(restartText, restartPosX, screenHeight / 1.25, 30, GRAY);
             if (!SoundExplode) {
+                mine->drawMine(mineTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
                 PlaySoundMulti(explodeSound);
                 SoundExplode = true;
             }
@@ -312,9 +313,10 @@ int main(void) {
             //--------------------------------------------------------------------------------------
             mine->drawDefusedArea();
             EndMode3D();
-            mine->drawMine(mineTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY); // Test draw
+            // mine->drawMine(mineTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY); // Test draw
             playerFocusPosArray = player->getRelativePlayerFocusPos();
             if(playerFocusPosArray[0]==-1){
+
                 if(playerFocusPosArray[1]==-1)  player->drawPlayer(playerPosNWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
                 if(playerFocusPosArray[1]==0) player->drawPlayer(playerPosWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
                 if(playerFocusPosArray[1]==1) player->drawPlayer(playerPosSWTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY);
@@ -367,7 +369,7 @@ int main(void) {
             //--------------------------------------------------------------------------------------
             // Pause Widget
             DrawTexture(pauseTexture, 0, 510, WHITE);
-            int pauseTextCenter = getCenterPosX("PAUSED", 30, GetScreenWidth());
+            int pauseTextCenter = getCenterPosX((char*)"PAUSED", 30, GetScreenWidth());
             if (pause && ((frameCounter / 30) % 2)) DrawText("PAUSED", pauseTextCenter, 200, 30, GRAY);
             //--------------------------------------------------------------------------------------
             // Quit Widget
