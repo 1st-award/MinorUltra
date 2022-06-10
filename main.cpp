@@ -293,8 +293,7 @@ int main(void) {
             else
                 textColor = BLACK;
             // Player Event
-            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) ||
-                timer->TimeDone())
+            if (player->isStepOnMine(mine) || ((mine->getMineNumber()) > 0 && (player->getDefuseKit() < 1)) || timer->TimeDone())
                 GAME_MODE = GAME_OVER;
             if (!mine->getMineNumber()) GAME_MODE = GAME_WIN;
             if (IsKeyDown(KEY_SPACE)) {
@@ -310,8 +309,8 @@ int main(void) {
             DrawGrid(int(levelArr[GAME_DIFF].mapScale), 1.0f);
             // Player Draw
             player->drawFocus();
-            //--------------------------------------------------------------------------------------
             mine->drawDefusedArea();
+            //--------------------------------------------------------------------------------------
             EndMode3D();
             // mine->drawMine(mineTexture, levelArr[GAME_DIFF].mapScale, levelArr[GAME_DIFF].cameraPovY); // Test draw
             playerFocusPosArray = player->getRelativePlayerFocusPos();
